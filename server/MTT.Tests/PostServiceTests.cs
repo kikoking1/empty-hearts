@@ -111,7 +111,7 @@ public class PostServiceTests
             .With(x => x.Id, null as Guid?)
             .Create();
 
-        var result = await _sut.AddAsync(post);
+        var result = await _sut.UpdateAsync(post);
 
         result.Data.Should().BeNull();
         result.ErrorMessage.Should().Be("Post id cannot be null");
