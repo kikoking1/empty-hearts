@@ -27,30 +27,8 @@ public class UserService : IUserService
         _mapper = mapper;
         _userRepository = userRepository;
     }
-    
-    public async Task<ResultType<UserLogin>> RetrieveByUsernameAsync(string username)
-    {
-        var user = await _userRepository.RetrieveByUsernameAsync(username);
-        
-        if (user == null)
-        {
-            return new ResultType<UserLogin>
-            {
-                StatusCode = StatusCodes.Status400BadRequest,
-                ErrorMessage = $"User with username: {username} does not exist",
-            };
-        }
 
-        var userDto = _mapper.Map<UserLogin>(user);
-        
-        return new ResultType<UserLogin>
-        {
-            StatusCode = StatusCodes.Status200OK,
-            Data = userDto
-        };
-    }
-    
-    public async Task<ResultType<UserDto>> AddAsync(UserLogin userLogin)
+    public async Task<ResultType<UserDto>> RegisterAsync(UserLogin userLogin)
     {
         var existingUser = await _userRepository.RetrieveByUsernameAsync(userLogin.Username);
         
