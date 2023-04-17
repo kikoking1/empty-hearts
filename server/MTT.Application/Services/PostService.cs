@@ -7,10 +7,14 @@ namespace MTT.Application.Services;
 public class PostService : IPostService
 {
     private readonly IPostRepository _postRepository;
+    private readonly ITokenService _tokenService;
 
-    public PostService(IPostRepository postRepository)
+    public PostService(
+        IPostRepository postRepository,
+        ITokenService tokenService)
     {
         _postRepository = postRepository;
+        _tokenService = tokenService;
     }
 
     public async Task<ResultType<Post>> RetrieveByIdAsync(Guid id)
@@ -53,7 +57,21 @@ public class PostService : IPostService
             };
         }
         
+        var userIdResult = _tokenService.GetSessionUserId();
+        if (userIdResult.ErrorMessage != null)
+        {
+            return new ResultType<Post>
+            {
+                StatusCode = userIdResult.StatusCode,
+                ErrorMessage = userIdResult.ErrorMessage,
+            };
+        }
+        
+        var userId = userIdResult.Data;
+        post.UserId = userId;
+        
         await _postRepository.AddAsync(post);
+        
         return new ResultType<Post>
         {
             StatusCode = StatusCodes.Status200OK,

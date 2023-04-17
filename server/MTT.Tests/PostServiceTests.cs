@@ -13,13 +13,15 @@ public class PostServiceTests
 {
     private readonly IPostService _sut;
     private readonly Mock<IPostRepository> _postRepositoryMock;
+    private readonly Mock<ITokenService> _tokenServiceMock;
     private readonly Fixture _fixture;
 
     public PostServiceTests()
     {
         _fixture = new Fixture();
         _postRepositoryMock = new Mock<IPostRepository>();
-        _sut = new PostService(_postRepositoryMock.Object);
+        _tokenServiceMock = new Mock<ITokenService>();
+        _sut = new PostService(_postRepositoryMock.Object, _tokenServiceMock.Object);
     }
     
     [Fact]
