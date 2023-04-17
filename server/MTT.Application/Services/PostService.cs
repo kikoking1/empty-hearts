@@ -21,7 +21,7 @@ public class PostService : IPostService
         {
             return new ResultType<Post>
             {
-                StatusCode = StatusCodes.Status400BadRequest,
+                StatusCode = StatusCodes.Status404NotFound,
                 ErrorMessage = $"Post with id: {id} does not exist",
             };
         }
@@ -78,7 +78,7 @@ public class PostService : IPostService
         {
             return new ResultType<Post>
             {
-                StatusCode = StatusCodes.Status400BadRequest,
+                StatusCode = StatusCodes.Status404NotFound,
                 ErrorMessage = $"No post with id: {post.Id} exists",
             };
         }

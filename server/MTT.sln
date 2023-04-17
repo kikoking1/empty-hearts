@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTT.Application", "MTT.Appl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTT.Infrastructure", "MTT.Infrastructure\MTT.Infrastructure.csproj", "{C1AEFB20-7375-4749-89D9-DE534F4B68B4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTT.Tests", "MTT.Tests\MTT.Tests.csproj", "{D294A0DE-AE37-4AD9-A8A1-18556C74D093}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{C1AEFB20-7375-4749-89D9-DE534F4B68B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C1AEFB20-7375-4749-89D9-DE534F4B68B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C1AEFB20-7375-4749-89D9-DE534F4B68B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D294A0DE-AE37-4AD9-A8A1-18556C74D093}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D294A0DE-AE37-4AD9-A8A1-18556C74D093}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D294A0DE-AE37-4AD9-A8A1-18556C74D093}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D294A0DE-AE37-4AD9-A8A1-18556C74D093}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
