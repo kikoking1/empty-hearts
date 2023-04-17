@@ -11,10 +11,12 @@ public class MTTDbContext : DbContext
     }
     
     public virtual DbSet<Post> Posts { get; set; }
+    public virtual DbSet<User> Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Post>().ToTable("Posts", "test");
+        modelBuilder.Entity<Post>().ToTable("Posts");
+        modelBuilder.Entity<User>().ToTable("Users");
         
         base.OnModelCreating(modelBuilder);
     }

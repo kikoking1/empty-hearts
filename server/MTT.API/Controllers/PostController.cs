@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MTT.Core.Interfaces;
 using MTT.Core.Models;
@@ -5,6 +6,7 @@ using MTT.Core.Models;
 namespace MTT.API.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/[controller]")]
 public class PostController : ControllerBase
 {
