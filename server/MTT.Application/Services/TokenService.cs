@@ -35,7 +35,7 @@ public class TokenService : ITokenService
         {
             return new ResultType<Guid>
             {
-                StatusCode = StatusCodes.Status200OK,
+                StatusCode = StatusCodes.Status400BadRequest,
                 ErrorMessage = "User is not logged in."
             };
         }
@@ -46,7 +46,7 @@ public class TokenService : ITokenService
         {
             return new ResultType<Guid>()
             {
-                StatusCode = StatusCodes.Status200OK,
+                StatusCode = StatusCodes.Status400BadRequest,
                 ErrorMessage = "User is not logged in."
             };
         }
