@@ -21,6 +21,7 @@ public class PostServiceTests
         _fixture = new Fixture();
         _postRepositoryMock = new Mock<IPostRepository>();
         _tokenServiceMock = new Mock<ITokenService>();
+        
         _sut = new PostService(_postRepositoryMock.Object, _tokenServiceMock.Object);
     }
     
@@ -89,6 +90,28 @@ public class PostServiceTests
         result.Data.Should().BeNull();
         result.ErrorMessage.Should().Be("Post body cannot be empty");
         result.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
+    }    
+    
+    [Fact]
+    public async Task AddAsync_Should_Return_Status400BadRequest_When_GetSessionUserId_Fails_With_Status400BadRequest()
+    {
+        var post = _fixture.Build<Post>()
+            .With(x => x.Body, _fixture.Create<string>())
+            .Create();
+
+        _tokenServiceMock
+            .Setup(mock => mock.GetSessionUserId())
+            .Returns(new ResultType<Guid>
+            {
+                StatusCode = StatusCodes.Status400BadRequest,
+                ErrorMessage = "User is not logged in."
+            });
+
+        var result = await _sut.AddAsync(post);
+
+        result.Data.Should().BeNull();
+        result.ErrorMessage.Should().Be("User is not logged in.");
+        result.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
     }
     
     [Fact]
@@ -97,11 +120,22 @@ public class PostServiceTests
         var post = _fixture.Build<Post>()
             .With(x => x.Body, _fixture.Create<string>())
             .Create();
+        
+        var userId = _fixture.Create<Guid>();
+        
+        _tokenServiceMock
+            .Setup(mock => mock.GetSessionUserId())
+            .Returns(new ResultType<Guid>
+            {
+                StatusCode = StatusCodes.Status200OK,
+                Data = userId
+            });
 
         var result = await _sut.AddAsync(post);
 
         result.Data.Should().NotBeNull();
         result.Data?.Body.Should().Be(post.Body);
+        result.Data?.UserId.Should().Be(userId);
         result.ErrorMessage.Should().BeNull();
         result.StatusCode.Should().Be(StatusCodes.Status200OK);
     }

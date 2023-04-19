@@ -2,10 +2,11 @@
 using AutoFixture;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 using Moq;
 using MTT.Application.Services;
+using MTT.Core.Configuration;
 using MTT.Core.Interfaces;
-using MTT.Core.Models;
 using Xunit;
 
 namespace MTT.Tests;
@@ -15,13 +16,16 @@ public class TokenServiceTests
     private readonly ITokenService _sut;
     private readonly Fixture _fixture;
     private readonly Mock<IHttpContextAccessor> _httpContextAccessor;
+    private readonly Mock<IOptions<AuthSettings>> _authSettings;
 
     public TokenServiceTests()
     {
         _fixture = new Fixture();
         _httpContextAccessor = new Mock<IHttpContextAccessor>();
+        _authSettings = new Mock<IOptions<AuthSettings>>();
+        _authSettings.SetupGet(x => x.Value).Returns(_fixture.Create<AuthSettings>());
 
-        _sut = new TokenService(_httpContextAccessor.Object);
+        _sut = new TokenService(_httpContextAccessor.Object, _authSettings.Object);
     }
     
     [Fact]

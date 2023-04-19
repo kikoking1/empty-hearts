@@ -15,17 +15,17 @@ public class UserService : IUserService
 {
     private const string FailedLoginMessage = "Invalid username or password.";
     
-    private readonly AuthSettings _authSettings;
     private readonly IUserRepository _userRepository;
+    private readonly ITokenService _tokenService;
     private readonly IMapper _mapper;
     
     public UserService(IUserRepository userRepository,
-        IOptions<AuthSettings> authSettings,
+        ITokenService tokenService,
         IMapper mapper)
     {
-        _authSettings = authSettings.Value;
         _mapper = mapper;
         _userRepository = userRepository;
+        _tokenService = tokenService;
     }
 
     public async Task<ResultType<UserDto>> RegisterAsync(UserLogin userLogin)
@@ -86,36 +86,12 @@ public class UserService : IUserService
             };
         }
 
-        var token = CreateToken(existingUser);
+        var token = _tokenService.CreateToken(existingUser);
         
         return new ResultType<string>
         {
             StatusCode = StatusCodes.Status200OK,
             Data = token,
         };
-    }
-    
-    private string CreateToken(User user)
-    {
-        List<Claim> claims = new List<Claim> {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, user.Username),
-            // new Claim(ClaimTypes.Role, "Admin"),
-            new Claim(ClaimTypes.Role, "User"),
-        };
-
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authSettings.JwtSigningKey));
-
-        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-
-        var token = new JwtSecurityToken(
-            claims: claims,
-            expires: DateTime.Now.AddDays(1),
-            signingCredentials: creds
-        );
-
-        var jwt = new JwtSecurityTokenHandler().WriteToken(token);
-
-        return jwt;
     }
 }

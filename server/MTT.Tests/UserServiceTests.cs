@@ -2,11 +2,9 @@ using AutoFixture;
 using AutoMapper;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
 using Moq;
 using MTT.API.MapperProfiles;
 using MTT.Application.Services;
-using MTT.Core.Configuration;
 using MTT.Core.Interfaces;
 using MTT.Core.Models;
 using Xunit;
@@ -16,7 +14,6 @@ namespace MTT.Tests;
 public class UserServiceTests
 {
     private readonly IUserService _sut;
-    private readonly Mock<IOptions<AuthSettings>> _authSettings;
     private readonly Mock<IUserRepository> _userRepositoryMock;
     private readonly IMapper _mapper;
     
@@ -25,12 +22,15 @@ public class UserServiceTests
     public UserServiceTests()
     {
         _fixture = new Fixture();
-        _authSettings = new Mock<IOptions<AuthSettings>>();
-        _authSettings.SetupGet(x => x.Value).Returns(_fixture.Create<AuthSettings>());
         _mapper = new Mapper(new MapperConfiguration(config => config.AddProfile<Mappings>()));
         _userRepositoryMock = new Mock<IUserRepository>();
+        
+        Mock<ITokenService> tokenServiceMock = new();
+        tokenServiceMock
+            .Setup(mock => mock.CreateToken(It.IsAny<User>()))
+            .Returns(_fixture.Create<string>());
 
-        _sut = new UserService(_userRepositoryMock.Object, _authSettings.Object, _mapper);
+        _sut = new UserService(_userRepositoryMock.Object, tokenServiceMock.Object, _mapper);
     }
     
     [Fact]
