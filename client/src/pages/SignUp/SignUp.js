@@ -81,25 +81,32 @@ const SignUp = () => {
   };
 
   return (
-    <>
-      {success ? (
-        <section>
-          <h1>Success!</h1>
-          <p>
-            <Link to="/login">Login</Link>
-          </p>
-        </section>
-      ) : (
-        <Container maxWidth="sm">
-          <Card className={classes.signupCard} variant="outlined">
-            <p
-              ref={errRef}
-              className={errMsg ? "errmsg" : "offscreen"}
-              aria-live="assertive"
-            >
-              {errMsg}
+    <Container maxWidth="sm">
+      <Card className={classes.signupCard} variant="outlined">
+        <p
+          ref={errRef}
+          className={errMsg ? "errmsg" : "offscreen"}
+          aria-live="assertive"
+        >
+          {errMsg}
+        </p>
+        <h1>Register</h1>
+        {success ? (
+          <section>
+            <h3>Account Created!</h3>
+            <p>
+              <Link
+                component="button"
+                onClick={() => {
+                  navigate("/login");
+                }}
+              >
+                Sign In
+              </Link>
             </p>
-            <h1>Register</h1>
+          </section>
+        ) : (
+          <>
             <form noValidate autoComplete="off" onSubmit={handleSubmit}>
               <TextField
                 error={!validUsername && usernameTouched}
@@ -126,7 +133,7 @@ const SignUp = () => {
                 type="password"
                 id="password"
                 autoComplete="off"
-                onChange={(e) => setPassword(e.target.value)}
+                onInput={(e) => setPassword(e.target.value)}
                 value={password}
                 size="small"
                 fullWidth
@@ -143,7 +150,7 @@ const SignUp = () => {
                 type="password"
                 id="confirm_password"
                 autoComplete="off"
-                onChange={(e) => setMatchPassword(e.target.value)}
+                onInput={(e) => setMatchPassword(e.target.value)}
                 value={matchPassword}
                 size="small"
                 fullWidth
@@ -166,6 +173,7 @@ const SignUp = () => {
                 Sign Up
               </Button>
             </form>
+
             <p>
               <br />
               Already registered?
@@ -179,10 +187,10 @@ const SignUp = () => {
                 Sign In
               </Link>
             </p>
-          </Card>
-        </Container>
-      )}
-    </>
+          </>
+        )}
+      </Card>
+    </Container>
   );
 };
 

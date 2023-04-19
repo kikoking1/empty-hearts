@@ -9,12 +9,11 @@ import Posts from "./pages/Posts/Posts";
 import Home from "./pages/Home/Home";
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { blueGrey, grey } from "@mui/material/colors";
+import { blueGrey } from "@mui/material/colors";
 
 const ROLES = {
-  User: 2001,
-  Editor: 1984,
-  Admin: 5150,
+  User: "User",
+  Admin: "Admin",
 };
 
 const themeDark = createTheme({
