@@ -53,6 +53,17 @@ builder.Services.AddAuthentication().AddJwtBearer(options =>
     };
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:3000")
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials();
+        });
+});
 var app = builder.Build();
 
 app.ConfigureExceptionHandler();
@@ -69,6 +80,8 @@ using (var scope = app.Services.CreateScope())
     var db = scope.ServiceProvider.GetRequiredService<MTTDbContext>();
     db.Database.EnsureCreated();
 }
+
+app.UseCors();
 
 app.UseHttpsRedirection();
 
