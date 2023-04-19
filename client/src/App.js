@@ -5,7 +5,7 @@ import SignUp from "./pages/SignUp/SignUp";
 import NotFound from "./pages/NotFound/NotFound";
 import Unauthorized from "./pages/Unauthorized/Unauthorized";
 import RequireAuth from "./components/RequireAuth/RequireAuth";
-import Posts from "./pages/Posts/Posts";
+import PostFeed from "./pages/PostFeed/PostFeed";
 import Home from "./pages/Home/Home";
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
@@ -45,7 +45,7 @@ function App() {
 
           {/* we want to protect these routes */}
           <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
-            <Route path="/posts" element={<Posts />} />
+            <Route path="/posts" element={<PostFeed />} />
           </Route>
           <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
             <Route path="/" element={<Home />} />

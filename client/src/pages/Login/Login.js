@@ -52,8 +52,16 @@ const Login = () => {
         }
       );
 
-      const accessToken = response;
-      const roles = ["User"];
+      const accessToken = response?.data;
+      const tokenParsed = JSON.parse(window.atob(accessToken.split(".")[1]));
+      let roles = ["User"];
+
+      Object.keys(tokenParsed).forEach((key) => {
+        if (key.includes("/role")) {
+          roles = [tokenParsed[key]];
+        }
+      });
+
       setAuth({ username, password, roles, accessToken });
       setUsername("");
       setPassword("");
