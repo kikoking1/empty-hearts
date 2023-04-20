@@ -10,14 +10,54 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { red } from "@mui/material/colors";
 import useAuth from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
-import { Hidden, SwipeableDrawer, IconButton, Link } from "@mui/material";
+import {
+  Hidden,
+  SwipeableDrawer,
+  IconButton,
+  Link,
+  ListItemButton,
+  ListItemText,
+} from "@mui/material";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 
 const TopNavigationBar = () => {
-  const { auth } = useAuth();
+  const { auth, setAuth } = useAuth();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+
+  const navItems = [
+    {
+      name: "Post Feed",
+      clickHandler: () => {
+        navigate("/posts");
+      },
+    },
+  ];
+
+  if (!auth?.accessToken) {
+    navItems.push({
+      name: "Log In",
+      clickHandler: () => {
+        navigate("/login");
+      },
+    });
+    navItems.push({
+      name: "Sign Up",
+      clickHandler: () => {
+        navigate("/signup");
+      },
+    });
+  } else {
+    navItems.push({
+      name: "Log Out",
+      clickHandler: () => {
+        setAuth({});
+        navigate("/posts");
+      },
+    });
+  }
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" sx={{ marginBottom: 6 }}>
@@ -44,36 +84,15 @@ const TopNavigationBar = () => {
             </IconButton>
           </Hidden>
           <Hidden smDown>
-            {!auth?.accessToken ? (
-              <>
-                <Button
-                  variant="contained"
-                  onClick={() => {
-                    navigate("/login");
-                  }}
-                >
-                  LogIn
-                </Button>
-                <Button
-                  variant="contained"
-                  onClick={() => {
-                    navigate("/signup");
-                  }}
-                  sx={{ marginLeft: 2 }}
-                >
-                  Sign Up
-                </Button>
-              </>
-            ) : (
+            {navItems.map((item) => (
               <Button
-                variant="contained"
-                onClick={() => {
-                  window.location.reload();
-                }}
+                color={"inherit"}
+                sx={{ textAlign: "center" }}
+                onClick={item.clickHandler}
               >
-                Log Out
+                {item.name}
               </Button>
-            )}
+            ))}
           </Hidden>
         </Toolbar>
         <SwipeableDrawer
@@ -89,51 +108,16 @@ const TopNavigationBar = () => {
           </div>
 
           <List>
-            <ListItem
-              button
-              onClick={() => {
-                navigate("/posts");
-              }}
-              color={"text.primary"}
-              sx={{ width: 150 }}
-            >
-              Posts Feed
-            </ListItem>
-            {!auth?.accessToken ? (
-              <>
-                <ListItem
-                  button
-                  onClick={() => {
-                    navigate("/login");
-                  }}
-                  color={"text.primary"}
-                  sx={{ width: 150 }}
-                >
-                  Log In
-                </ListItem>
-                <ListItem
-                  button
-                  onClick={() => {
-                    navigate("/signup");
-                  }}
-                  color={"text.primary"}
-                  sx={{ width: 150 }}
-                >
-                  Sign Up
-                </ListItem>
-              </>
-            ) : (
+            {navItems.map((item) => (
               <ListItem
                 button
-                onClick={() => {
-                  window.location.reload();
-                }}
+                onClick={item.clickHandler}
                 color={"text.primary"}
                 sx={{ width: 150 }}
               >
-                Log Out
+                {item.name}
               </ListItem>
-            )}
+            ))}
           </List>
         </SwipeableDrawer>
       </AppBar>
