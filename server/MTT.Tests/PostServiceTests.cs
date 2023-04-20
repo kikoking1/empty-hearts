@@ -61,20 +61,36 @@ public class PostServiceTests
         result.StatusCode.Should().Be(StatusCodes.Status200OK);
     }
     
-    [Fact]
-    public async Task RetrieveAsync_Should_Return_Status200OK()
+    [Theory]
+    [InlineData(-1, 100)]
+    [InlineData(0, 101)]
+    [InlineData(10, 0)]
+    [InlineData(10, -1)]
+    public async Task RetrieveAsync_Should_Return_Status400BadRequest_When_Invalid_Limit_Offset_Parameters(int offset, int limit)
+    {
+        var result = await _sut.RetrieveAsync(offset, limit);
+
+        result.Data.Should().BeNull();
+        result.ErrorMessage.Should().Be("Invalid limit or offset. Limit cannot be greater than 100, or less than 1. Offset cannot be less than 0.");
+        result.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
+    }
+    
+    [Theory]
+    [InlineData(0, 100)]
+    [InlineData(0, 10)]
+    [InlineData(100, 1)]
+    public async Task RetrieveAsync_Should_Return_Status200OK_When_Valid_Limit_Offset_Parameters(int offset, int limit)
     {
         var posts = _fixture.Create<List<Post>>();
 
         _postRepositoryMock
-            .Setup(mock => mock.RetrieveAsync())
+            .Setup(mock => mock.RetrieveAsync(offset, limit))
             .ReturnsAsync(posts);
         
-        var result = await _sut.RetrieveAsync();
+        var result = await _sut.RetrieveAsync(offset, limit);
 
         result.Data.Should().NotBeEmpty();
-        result.Data?.Count.Should().Be(posts.Count);
-        result.ErrorMessage.Should().Be(null);
+        result.ErrorMessage.Should().BeNull();
         result.StatusCode.Should().Be(StatusCodes.Status200OK);
     }
     

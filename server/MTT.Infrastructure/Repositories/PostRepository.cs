@@ -20,9 +20,13 @@ public class PostRepository : IPostRepository
             .FirstOrDefaultAsync(entity => entity.Id == id);
     }
     
-    public async Task<List<Post>> RetrieveAsync()
+    public async Task<List<Post>> RetrieveAsync(int offset, int limit)
     {
-        return await _mttDbContext.Posts.ToListAsync();
+        return await _mttDbContext.Posts
+            .OrderBy(b => b.DateCreated)
+            .Skip(offset)
+            .Take(limit)
+            .ToListAsync();
     }
     
     public async Task AddAsync(Post post)

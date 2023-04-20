@@ -28,6 +28,17 @@ public class PostController : ControllerBase
         var result = await _postService.RetrieveByIdAsync(id);
         return StatusCode(result.StatusCode, result.ErrorMessage ?? (object) result.Data);
     }
+    
+    [HttpGet]
+    [Route("{offset}/{limit}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<Post>> RetrievePostsAsync(int offset, int limit)
+    {
+        var result = await _postService.RetrieveAsync(offset, limit);
+        return StatusCode(result.StatusCode, result.ErrorMessage ?? (object) result.Data);
+    }
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]

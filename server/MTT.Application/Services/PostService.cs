@@ -37,12 +37,21 @@ public class PostService : IPostService
         };
     }    
     
-    public async Task<ResultType<List<Post>>> RetrieveAsync()
+    public async Task<ResultType<List<Post>>> RetrieveAsync(int offset, int limit)
     {
+        if (limit > 100 || limit < 1 || offset < 0)
+        {
+            return new ResultType<List<Post>>
+            {
+                StatusCode = StatusCodes.Status400BadRequest,
+                ErrorMessage = "Invalid limit or offset. Limit cannot be greater than 100, or less than 1. Offset cannot be less than 0."
+            };
+        }
+
         return new ResultType<List<Post>>
         {
             StatusCode = StatusCodes.Status200OK,
-            Data = await _postRepository.RetrieveAsync()
+            Data = await _postRepository.RetrieveAsync(offset, limit)
         };
     }
     
