@@ -2,7 +2,7 @@ import { useRef, useState, useEffect, useReducer } from "react";
 
 import axios from "../../util/axios";
 import { useNavigate } from "react-router-dom";
-import { TextField, Button, Card, Link, Container } from "@mui/material";
+import { TextField, Button, Card, Link, Container, Alert } from "@mui/material";
 import classes from "./SignUp.module.scss";
 import { PASSWORD_REGEX, RFC2882_EMAIL_REGEX } from "../../util/globals/regex";
 
@@ -165,11 +165,12 @@ const SignUp = () => {
           },
         });
       }
+      setApiErrMsg("");
     } catch (err) {
       if (!err?.response) {
         setApiErrMsg("Registration failed. Please try again later.");
       } else {
-        setApiErrMsg(err?.response);
+        setApiErrMsg(err?.response?.data);
       }
     }
   };
@@ -177,10 +178,13 @@ const SignUp = () => {
   return (
     <Container maxWidth="sm">
       <Card className={classes.signupCard} variant="outlined">
-        <p className={errApiMsg ? "errmsg" : "offscreen"} aria-live="assertive">
-          {errApiMsg}
-        </p>
         <h1>Register</h1>
+        {errApiMsg && (
+          <Alert severity="error" variant="outlined" sx={{ marginBottom: 3 }}>
+            {errApiMsg}
+          </Alert>
+        )}
+
         {success ? (
           <section>
             <h3>Account Successfully Created!</h3>
