@@ -4,7 +4,7 @@ import axios from "../../util/axios";
 import { useNavigate } from "react-router-dom";
 import { TextField, Button, Card, Link, Container, Alert } from "@mui/material";
 import classes from "./Login.module.scss";
-import { PASSWORD_REGEX, RFC2882_EMAIL_REGEX } from "../../util/globals/regex";
+import { PASSWORD_REGEX, RFC2882_EMAIL_REGEX } from "../../util/regex";
 import {
   UPDATE_FORM,
   formReducer,
@@ -94,17 +94,19 @@ const Login = () => {
       });
       // Reset state
       for (const name in formState) {
-        dispatch({
-          type: UPDATE_FORM,
-          data: {
-            name,
-            value: "",
-            hasError: true,
-            error: "",
-            touched: false,
-            isFormValid: false,
-          },
-        });
+        if (name !== "isFormValid") {
+          dispatch({
+            type: UPDATE_FORM,
+            data: {
+              name,
+              value: "",
+              hasError: true,
+              error: "",
+              touched: false,
+              isFormValid: false,
+            },
+          });
+        }
       }
       setApiErrMsg("");
 

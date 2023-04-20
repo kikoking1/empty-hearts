@@ -44,8 +44,11 @@ const inputValidation = (name, value, formState) => {
   return { hasError, error };
 };
 
-const AddPostForm = () => {
-  const [formState, dispatch] = useReducer(formReducer, initialState);
+const AddPostForm = (props) => {
+  const [formState, dispatch] = useReducer(
+    formReducer,
+    structuredClone(initialState)
+  );
 
   const [apiErrMsg, setApiErrMsg] = useState("");
 
@@ -69,24 +72,27 @@ const AddPostForm = () => {
 
       // Reset state
       for (const name in formState) {
-        dispatch({
-          type: UPDATE_FORM,
-          data: {
-            name,
-            value: "",
-            hasError: true,
-            error: "",
-            touched: false,
-            isFormValid: false,
-          },
-        });
+        if (name !== "isFormValid") {
+          dispatch({
+            type: UPDATE_FORM,
+            data: {
+              name,
+              value: initialState[name].value,
+              hasError: initialState[name].hasError,
+              error: initialState[name].error,
+              touched: initialState[name].touched,
+              isFormValid: false,
+            },
+          });
+        }
       }
       setApiErrMsg("");
+      props.handleLoadPosts();
     } catch (err) {
       if (!err?.response) {
-        setApiErrMsg("No Server Response.");
-      } else {
         setApiErrMsg("Create Post Failed...");
+      } else {
+        setApiErrMsg(err?.response?.data);
       }
     }
   };
@@ -166,7 +172,7 @@ const AddPostForm = () => {
 
           <TextField
             variant="standard"
-            label="Citation/Source"
+            label="Author/Source"
             id="citation"
             autoComplete="off"
             onChange={(e) =>

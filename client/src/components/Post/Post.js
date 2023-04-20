@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import { Button, Card, Typography, CardContent } from "@mui/material";
 
 const Post = (props) => {
-  console.log(props);
   return (
     <Card
       sx={{ marginTop: "20px", paddingLeft: "40px", paddingRight: "40px" }}
@@ -14,10 +13,8 @@ const Post = (props) => {
           {props.post.body}
         </Typography>
         <br />
-        <Typography variant="p" sx={{ fontSize: 11 }}>
-          Author:
-          <br />
-          {props.post.citation}
+        <Typography variant="p" sx={{ fontSize: 11, fontStyle: "italic" }}>
+          ~ {props.post.citation ? props.post.citation : "Anonymous"}
         </Typography>
       </CardContent>
     </Card>
