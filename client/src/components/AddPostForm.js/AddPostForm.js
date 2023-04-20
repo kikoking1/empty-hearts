@@ -1,8 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useReducer } from "react";
 import SentimentSatisfiedAltSharpIcon from "@mui/icons-material/SentimentSatisfiedAltSharp";
 import classes from "./AddPostForm.module.scss";
 import { yellow } from "@mui/material/colors";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import {
+  UPDATE_FORM,
+  formReducer,
+  onFocusOut,
+  onInputChange,
+} from "../../util/formUtils";
 
 import {
   Button,
@@ -14,17 +20,36 @@ import {
   Link,
 } from "@mui/material";
 
+const initialState = {
+  message: { value: "", touched: false, hasError: true, error: "" },
+  citation: { value: "", touched: false, hasError: false, error: "" },
+};
+
+const inputValidation = (name, value, formState) => {
+  let hasError = false,
+    error = "";
+  switch (name) {
+    case "message":
+      if (value.trim() === "") {
+        hasError = true;
+        error = "Message cannot be empty.";
+      } else {
+        hasError = false;
+        error = "";
+      }
+      break;
+    default:
+      break;
+  }
+  return { hasError, error };
+};
+
 const AddPostForm = () => {
-  const [message, setMessage] = useState("");
-  const [validMessage, setValidMessage] = useState(false);
-  const [citation, setCitation] = useState("");
-  const [errMsg, setErrMsg] = useState("");
+  const [formState, dispatch] = useReducer(formReducer, initialState);
+
+  const [apiErrMsg, setApiErrMsg] = useState("");
 
   const axiosPrivate = useAxiosPrivate();
-
-  useEffect(() => {
-    setValidMessage(message.length > 0);
-  }, [message]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,8 +58,8 @@ const AddPostForm = () => {
       await axiosPrivate.post(
         "/api/Post",
         JSON.stringify({
-          body: message,
-          citation: citation,
+          body: formState.message.value,
+          citation: formState.citation.value,
         }),
         {
           headers: { "Content-Type": "application/json" },
@@ -42,15 +67,26 @@ const AddPostForm = () => {
         }
       );
 
-      setMessage("");
-      setCitation("");
-      setValidMessage(false);
-      setErrMsg("");
+      // Reset state
+      for (const name in formState) {
+        dispatch({
+          type: UPDATE_FORM,
+          data: {
+            name,
+            value: "",
+            hasError: true,
+            error: "",
+            touched: false,
+            isFormValid: false,
+          },
+        });
+      }
+      setApiErrMsg("");
     } catch (err) {
       if (!err?.response) {
-        setErrMsg("No Server Response.");
+        setApiErrMsg("No Server Response.");
       } else {
-        setErrMsg("Create Post Failed...");
+        setApiErrMsg("Create Post Failed...");
       }
     }
   };
@@ -88,27 +124,44 @@ const AddPostForm = () => {
           </Link>
         </Typography>
 
-        {errMsg && (
-          <Alert severity="error" variant="outlined" sx={{ marginBottom: 2 }}>
-            {errMsg}
+        {apiErrMsg && (
+          <Alert severity="error" variant="outlined" sx={{ marginBottom: 3 }}>
+            {apiErrMsg}
           </Alert>
         )}
 
         <form noValidate autoComplete="off" onSubmit={handleSubmit}>
           <TextField
+            error={formState.message.hasError && formState.message.touched}
             variant="standard"
             label="Message"
             id="message"
             autoComplete="off"
-            onChange={(e) => setMessage(e.target.value)}
-            value={message}
+            onChange={(e) =>
+              onInputChange(
+                "message",
+                e.target.value,
+                dispatch,
+                formState,
+                inputValidation
+              )
+            }
+            onBlur={(e) =>
+              onFocusOut(
+                "message",
+                e.target.value,
+                dispatch,
+                formState,
+                inputValidation
+              )
+            }
+            value={formState.message.value}
             size="small"
             fullWidth
             required
-            aria-invalid={validMessage ? "false" : "true"}
             multiline={true}
             inputProps={{ maxLength: 500 }}
-            helperText={`${message.length}/500`}
+            helperText={`${formState.message.value.length}/500`}
           />
 
           <TextField
@@ -116,19 +169,36 @@ const AddPostForm = () => {
             label="Citation/Source"
             id="citation"
             autoComplete="off"
-            onChange={(e) => setCitation(e.target.value)}
-            value={citation}
+            onChange={(e) =>
+              onInputChange(
+                "citation",
+                e.target.value,
+                dispatch,
+                formState,
+                inputValidation
+              )
+            }
+            onBlur={(e) =>
+              onFocusOut(
+                "citation",
+                e.target.value,
+                dispatch,
+                formState,
+                inputValidation
+              )
+            }
+            value={formState.citation.value}
             size="small"
             fullWidth
             inputProps={{ maxLength: 100 }}
-            helperText={`${citation.length}/100`}
+            helperText={`${formState.citation.value.length}/100`}
             sx={{ marginTop: 1 }}
           />
           <Button
             className={classes.addPostBtnSpacerTop}
             variant="contained"
             type="submit"
-            disabled={!validMessage ? true : false}
+            disabled={!formState.isFormValid}
           >
             Submit
           </Button>
