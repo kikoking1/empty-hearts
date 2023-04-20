@@ -10,14 +10,7 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { red } from "@mui/material/colors";
 import useAuth from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
-import {
-  Hidden,
-  SwipeableDrawer,
-  IconButton,
-  Link,
-  ListItemButton,
-  ListItemText,
-} from "@mui/material";
+import { Hidden, SwipeableDrawer, IconButton } from "@mui/material";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 
