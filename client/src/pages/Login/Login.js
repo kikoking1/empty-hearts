@@ -88,7 +88,6 @@ const Login = () => {
 
       setAuth({
         username: formState.username.value.toLowerCase(),
-        password: formState.password.value,
         roles,
         accessToken,
       });

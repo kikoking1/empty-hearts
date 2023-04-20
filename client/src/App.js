@@ -49,14 +49,10 @@ function App() {
           <Route path="login" element={<Login />} />
           <Route path="signup" element={<SignUp />} />
           <Route path="unauthorized" element={<Unauthorized />} />
+          <Route path="/posts" element={<Posts />} />
+          <Route path="/" element={<Home />} />
 
-          {/* we want to protect these routes */}
-          <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
-            <Route path="/posts" element={<Posts />} />
-          </Route>
-          <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
-            <Route path="/" element={<Home />} />
-          </Route>
+          {/* we want to protect these routes (NOTE: none to protect, yet!) */}
 
           {/* catch all */}
           <Route path="*" element={<NotFound />} />

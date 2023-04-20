@@ -3,6 +3,8 @@ import SentimentSatisfiedAltSharpIcon from "@mui/icons-material/SentimentSatisfi
 import classes from "./AddPostForm.module.scss";
 import { yellow } from "@mui/material/colors";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import useAuth from "../../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 import {
   UPDATE_FORM,
   formReducer,
@@ -18,6 +20,7 @@ import {
   Alert,
   TextField,
   Link,
+  dividerClasses,
 } from "@mui/material";
 
 const initialState = {
@@ -45,6 +48,9 @@ const inputValidation = (name, value, formState) => {
 };
 
 const AddPostForm = (props) => {
+  const { auth } = useAuth();
+  const navigate = useNavigate();
+
   const [formState, dispatch] = useReducer(
     formReducer,
     structuredClone(initialState)
@@ -97,118 +103,152 @@ const AddPostForm = (props) => {
     }
   };
 
+  console.log("auth: ", auth);
+
   return (
     <Card className={classes.addPostFormCard} variant="outlined">
       <CardContent>
-        <Typography
-          variant="h3"
-          sx={{ fontSize: 20, marginBottom: 1, marginTop: 1 }}
-        >
-          Add Post
-        </Typography>
-        <Typography
-          sx={{ mb: 1.5, fontSize: 14, fontStyle: "italic" }}
-          color="text.primary"
-        >
-          Share something positive with the world today {""}
-          <SentimentSatisfiedAltSharpIcon
-            sx={{
-              fontSize: 18,
-              verticalAlign: "text-bottom",
-              color: yellow[700],
-            }}
-          />
-        </Typography>
-
-        <Typography sx={{ mb: 1.5, fontSize: 12 }} color="text.primary">
-          Need a positive message idea? Check this out: <br />
-          <Link
-            href="https://www.brainyquote.com/topics/positive-quotes"
-            target="_blank"
+        {!auth?.accessToken ? (
+          <Typography
+            sx={{ mb: 1.5, fontSize: 18, marginTop: 2 }}
+            color="text.primary"
           >
-            https://www.brainyquote.com/topics/positive-quotes
-          </Link>
-        </Typography>
+            Have a positive message to share with the world? <br />
+            <br />
+            <Button
+              variant="contained"
+              onClick={() => {
+                navigate("/login");
+              }}
+            >
+              Log In
+            </Button>
+            <Button
+              variant="contained"
+              onClick={() => {
+                navigate("/signup");
+              }}
+              sx={{ marginLeft: 2 }}
+            >
+              Sign Up
+            </Button>
+          </Typography>
+        ) : (
+          <>
+            <Typography
+              variant="h3"
+              sx={{ fontSize: 20, marginBottom: 1, marginTop: 1 }}
+            >
+              Add Post
+            </Typography>
+            <Typography
+              sx={{ mb: 1.5, fontSize: 14, fontStyle: "italic" }}
+              color="text.primary"
+            >
+              Share something positive with the world today {""}
+              <SentimentSatisfiedAltSharpIcon
+                sx={{
+                  fontSize: 18,
+                  verticalAlign: "text-bottom",
+                  color: yellow[700],
+                }}
+              />
+            </Typography>
 
-        {apiErrMsg && (
-          <Alert severity="error" variant="outlined" sx={{ marginBottom: 3 }}>
-            {apiErrMsg}
-          </Alert>
+            <Typography sx={{ mb: 1.5, fontSize: 12 }} color="text.primary">
+              Need a positive message idea? Check this out: <br />
+              <Link
+                href="https://www.brainyquote.com/topics/positive-quotes"
+                target="_blank"
+              >
+                https://www.brainyquote.com/topics/positive-quotes
+              </Link>
+            </Typography>
+            {apiErrMsg && (
+              <Alert
+                severity="error"
+                variant="outlined"
+                sx={{ marginBottom: 3 }}
+              >
+                {apiErrMsg}
+              </Alert>
+            )}
+
+            <form noValidate autoComplete="off" onSubmit={handleSubmit}>
+              <TextField
+                error={formState.message.hasError && formState.message.touched}
+                variant="standard"
+                label="Message"
+                id="message"
+                autoComplete="off"
+                onChange={(e) =>
+                  onInputChange(
+                    "message",
+                    e.target.value,
+                    dispatch,
+                    formState,
+                    inputValidation
+                  )
+                }
+                onBlur={(e) =>
+                  onFocusOut(
+                    "message",
+                    e.target.value,
+                    dispatch,
+                    formState,
+                    inputValidation
+                  )
+                }
+                value={formState.message.value}
+                size="small"
+                fullWidth
+                required
+                multiline={true}
+                inputProps={{ maxLength: 500 }}
+                helperText={`${formState.message.value.length}/500`}
+              />
+
+              <TextField
+                variant="standard"
+                label="Author/Source"
+                id="citation"
+                autoComplete="off"
+                onChange={(e) =>
+                  onInputChange(
+                    "citation",
+                    e.target.value,
+                    dispatch,
+                    formState,
+                    inputValidation
+                  )
+                }
+                onBlur={(e) =>
+                  onFocusOut(
+                    "citation",
+                    e.target.value,
+                    dispatch,
+                    formState,
+                    inputValidation
+                  )
+                }
+                value={formState.citation.value}
+                size="small"
+                fullWidth
+                inputProps={{ maxLength: 100 }}
+                helperText={`${formState.citation.value.length}/100`}
+                sx={{ marginTop: 1 }}
+              />
+              <Button
+                className={classes.addPostBtnSpacerTop}
+                variant="contained"
+                type="submit"
+                disabled={!formState.isFormValid}
+              >
+                Submit
+              </Button>
+            </form>
+          </>
         )}
-
-        <form noValidate autoComplete="off" onSubmit={handleSubmit}>
-          <TextField
-            error={formState.message.hasError && formState.message.touched}
-            variant="standard"
-            label="Message"
-            id="message"
-            autoComplete="off"
-            onChange={(e) =>
-              onInputChange(
-                "message",
-                e.target.value,
-                dispatch,
-                formState,
-                inputValidation
-              )
-            }
-            onBlur={(e) =>
-              onFocusOut(
-                "message",
-                e.target.value,
-                dispatch,
-                formState,
-                inputValidation
-              )
-            }
-            value={formState.message.value}
-            size="small"
-            fullWidth
-            required
-            multiline={true}
-            inputProps={{ maxLength: 500 }}
-            helperText={`${formState.message.value.length}/500`}
-          />
-
-          <TextField
-            variant="standard"
-            label="Author/Source"
-            id="citation"
-            autoComplete="off"
-            onChange={(e) =>
-              onInputChange(
-                "citation",
-                e.target.value,
-                dispatch,
-                formState,
-                inputValidation
-              )
-            }
-            onBlur={(e) =>
-              onFocusOut(
-                "citation",
-                e.target.value,
-                dispatch,
-                formState,
-                inputValidation
-              )
-            }
-            value={formState.citation.value}
-            size="small"
-            fullWidth
-            inputProps={{ maxLength: 100 }}
-            helperText={`${formState.citation.value.length}/100`}
-            sx={{ marginTop: 1 }}
-          />
-          <Button
-            className={classes.addPostBtnSpacerTop}
-            variant="contained"
-            type="submit"
-            disabled={!formState.isFormValid}
-          >
-            Submit
-          </Button>
-        </form>
       </CardContent>
     </Card>
   );

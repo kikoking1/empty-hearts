@@ -6,7 +6,6 @@ using MTT.Core.Models;
 namespace MTT.API.Controllers;
 
 [ApiController]
-[Authorize]
 [Route("api/[controller]")]
 public class PostController : ControllerBase
 {
@@ -41,6 +40,7 @@ public class PostController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -51,6 +51,7 @@ public class PostController : ControllerBase
     }
 
     [HttpPut]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -61,6 +62,7 @@ public class PostController : ControllerBase
     }
     
     [HttpDelete]
+    [Authorize]
     [Route("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
