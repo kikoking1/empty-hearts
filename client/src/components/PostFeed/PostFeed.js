@@ -6,7 +6,11 @@ const PostFeed = (props) => {
   return (
     <div>
       {props.apiErrMsg && (
-        <Alert severity="error" variant="outlined" sx={{ marginBottom: 3 }}>
+        <Alert
+          severity="error"
+          variant="outlined"
+          sx={{ marginBottom: 3, marginTop: 3 }}
+        >
           {props.apiErrMsg}
         </Alert>
       )}

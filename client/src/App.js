@@ -4,12 +4,12 @@ import Login from "./pages/Login/Login";
 import SignUp from "./pages/SignUp/SignUp";
 import NotFound from "./pages/NotFound/NotFound";
 import Unauthorized from "./pages/Unauthorized/Unauthorized";
-import RequireAuth from "./components/RequireAuth/RequireAuth";
 import Posts from "./pages/Posts/Posts";
 import Home from "./pages/Home/Home";
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { blueGrey } from "@mui/material/colors";
+import TopNavigationBar from "./components/TopNavigationBar/TopNavigationBar";
 
 const ROLES = {
   User: "User",
@@ -43,6 +43,7 @@ function App() {
   return (
     <ThemeProvider theme={themeDark}>
       <CssBaseline />
+      <TopNavigationBar />
       <Routes>
         <Route path="/" element={<Layout />}>
           {/* public routes */}

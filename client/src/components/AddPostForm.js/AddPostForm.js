@@ -20,7 +20,6 @@ import {
   Alert,
   TextField,
   Link,
-  dividerClasses,
 } from "@mui/material";
 
 const initialState = {
@@ -102,8 +101,6 @@ const AddPostForm = (props) => {
       }
     }
   };
-
-  console.log("auth: ", auth);
 
   return (
     <Card className={classes.addPostFormCard} variant="outlined">
