@@ -1,12 +1,16 @@
-import { useRef, useState, useEffect, useReducer } from "react";
+import { useState, useReducer } from "react";
 
 import axios from "../../util/axios";
 import { useNavigate } from "react-router-dom";
 import { TextField, Button, Card, Link, Container, Alert } from "@mui/material";
 import classes from "./SignUp.module.scss";
 import { PASSWORD_REGEX, RFC2882_EMAIL_REGEX } from "../../util/globals/regex";
-
-const UPDATE_FORM = "UPDATE_FORM";
+import {
+  UPDATE_FORM,
+  formReducer,
+  onFocusOut,
+  onInputChange,
+} from "../../util/formUtils";
 
 const initialState = {
   username: { value: "", touched: false, hasError: true, error: "" },
@@ -14,7 +18,7 @@ const initialState = {
   passwordMatch: { value: "", touched: false, hasError: true, error: "" },
 };
 
-const validateInput = (name, value, formState) => {
+const inputValidation = (name, value, formState) => {
   let hasError = false,
     error = "";
   switch (name) {
@@ -58,75 +62,8 @@ const validateInput = (name, value, formState) => {
   return { hasError, error };
 };
 
-const onFocusOut = (name, value, dispatch, formState) => {
-  const { hasError, error } = validateInput(name, value, formState);
-  let isFormValid = true;
-  for (const key in formState) {
-    const item = formState[key];
-    if (key === name && hasError) {
-      isFormValid = false;
-      break;
-    } else if (key !== name && item.hasError) {
-      isFormValid = false;
-      break;
-    }
-  }
-
-  dispatch({
-    type: UPDATE_FORM,
-    data: { name, value, hasError, error, touched: true, isFormValid },
-  });
-};
-
-const onInputChange = (name, value, dispatch, formState) => {
-  const { hasError, error } = validateInput(name, value, formState);
-  let isFormValid = true;
-
-  for (const key in formState) {
-    const item = formState[key];
-    // Check if the current field has error
-    if (key === name && hasError) {
-      isFormValid = false;
-      break;
-    } else if (key !== name && item.hasError) {
-      // Check if any other field has error
-      isFormValid = false;
-      break;
-    }
-  }
-
-  dispatch({
-    type: UPDATE_FORM,
-    data: {
-      name,
-      value,
-      hasError,
-      error,
-      touched: formState[name].touched,
-      isFormValid,
-    },
-  });
-};
-
-const formsReducer = (state, action) => {
-  switch (action.type) {
-    case UPDATE_FORM:
-      const { name, value, hasError, error, touched, isFormValid } =
-        action.data;
-      return {
-        ...state,
-        // update the state of the particular field,
-        // by retaining the state of other fields
-        [name]: { ...state[name], value, hasError, error, touched },
-        isFormValid,
-      };
-    default:
-      return state;
-  }
-};
-
 const SignUp = () => {
-  const [formState, dispatch] = useReducer(formsReducer, initialState);
+  const [formState, dispatch] = useReducer(formReducer, initialState);
 
   const [errApiMsg, setApiErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
@@ -212,7 +149,13 @@ const SignUp = () => {
                 id="username"
                 autoComplete="off"
                 onChange={(e) =>
-                  onInputChange("username", e.target.value, dispatch, formState)
+                  onInputChange(
+                    "username",
+                    e.target.value,
+                    dispatch,
+                    formState,
+                    inputValidation
+                  )
                 }
                 value={formState.username.value}
                 size="small"
@@ -220,7 +163,13 @@ const SignUp = () => {
                 required
                 aria-invalid={!formState.username.hasError ? "false" : "true"}
                 onBlur={(e) =>
-                  onFocusOut("username", e.target.value, dispatch, formState)
+                  onFocusOut(
+                    "username",
+                    e.target.value,
+                    dispatch,
+                    formState,
+                    inputValidation
+                  )
                 }
                 helperText={
                   formState.username.hasError &&
@@ -239,7 +188,13 @@ const SignUp = () => {
                 id="password"
                 autoComplete="off"
                 onInput={(e) =>
-                  onInputChange("password", e.target.value, dispatch, formState)
+                  onInputChange(
+                    "password",
+                    e.target.value,
+                    dispatch,
+                    formState,
+                    inputValidation
+                  )
                 }
                 value={formState.password.value}
                 size="small"
@@ -247,7 +202,13 @@ const SignUp = () => {
                 required
                 aria-invalid={!formState.password.hasError ? "false" : "true"}
                 onBlur={(e) =>
-                  onFocusOut("password", e.target.value, dispatch, formState)
+                  onFocusOut(
+                    "password",
+                    e.target.value,
+                    dispatch,
+                    formState,
+                    inputValidation
+                  )
                 }
                 helperText={
                   formState.password.hasError &&
@@ -272,7 +233,8 @@ const SignUp = () => {
                     "passwordMatch",
                     e.target.value,
                     dispatch,
-                    formState
+                    formState,
+                    inputValidation
                   )
                 }
                 value={formState.passwordMatch.value}
@@ -287,7 +249,8 @@ const SignUp = () => {
                     "passwordMatch",
                     e.target.value,
                     dispatch,
-                    formState
+                    formState,
+                    inputValidation
                   )
                 }
                 helperText={
