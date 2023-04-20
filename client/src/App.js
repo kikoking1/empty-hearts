@@ -5,7 +5,7 @@ import SignUp from "./pages/SignUp/SignUp";
 import NotFound from "./pages/NotFound/NotFound";
 import Unauthorized from "./pages/Unauthorized/Unauthorized";
 import RequireAuth from "./components/RequireAuth/RequireAuth";
-import PostFeed from "./pages/PostFeed/PostFeed";
+import Posts from "./pages/Posts/Posts";
 import Home from "./pages/Home/Home";
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
@@ -32,6 +32,13 @@ const themeDark = createTheme({
   },
 });
 
+const themeLight = createTheme({
+  palette: {
+    mode: "light",
+    primary: blueGrey,
+  },
+});
+
 function App() {
   return (
     <ThemeProvider theme={themeDark}>
@@ -45,7 +52,7 @@ function App() {
 
           {/* we want to protect these routes */}
           <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
-            <Route path="/posts" element={<PostFeed />} />
+            <Route path="/posts" element={<Posts />} />
           </Route>
           <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
             <Route path="/" element={<Home />} />

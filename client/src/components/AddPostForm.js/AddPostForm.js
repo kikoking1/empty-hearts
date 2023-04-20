@@ -1,40 +1,40 @@
 import React, { useState, useEffect } from "react";
 import SentimentSatisfiedAltSharpIcon from "@mui/icons-material/SentimentSatisfiedAltSharp";
 import classes from "./AddPostForm.module.scss";
-import { yellow, red } from "@mui/material/colors";
+import { yellow } from "@mui/material/colors";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+
 import {
-  Container,
   Button,
   Card,
   Typography,
   CardContent,
-  CardActions,
+  Alert,
   TextField,
+  Link,
 } from "@mui/material";
 
 const AddPostForm = () => {
   const [message, setMessage] = useState("");
   const [validMessage, setValidMessage] = useState(false);
-  const [messageTouched, setMessageTouched] = useState(false);
+  const [citation, setCitation] = useState("");
   const [errMsg, setErrMsg] = useState("");
 
   const axiosPrivate = useAxiosPrivate();
 
   useEffect(() => {
-    if (messageTouched) {
-      setValidMessage(message.length > 0);
-    }
+    setValidMessage(message.length > 0);
   }, [message]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await axiosPrivate.post(
+      await axiosPrivate.post(
         "/api/Post",
         JSON.stringify({
           body: message,
+          citation: citation,
         }),
         {
           headers: { "Content-Type": "application/json" },
@@ -43,14 +43,14 @@ const AddPostForm = () => {
       );
 
       setMessage("");
-      setMessageTouched(false);
+      setCitation("");
+      setValidMessage(false);
+      setErrMsg("");
     } catch (err) {
       if (!err?.response) {
-        setErrMsg("No Server Response");
-      } else if (err.response?.status === 409) {
-        setErrMsg("Username Taken");
+        setErrMsg("No Server Response.");
       } else {
-        setErrMsg("Registration Failed");
+        setErrMsg("Create Post Failed...");
       }
     }
   };
@@ -78,16 +78,24 @@ const AddPostForm = () => {
           />
         </Typography>
 
-        <Typography
-          sx={{ mb: 1.5, fontSize: 14, fontStyle: "italic" }}
-          color={"error"}
-        >
-          {errMsg}
+        <Typography sx={{ mb: 1.5, fontSize: 12 }} color="text.primary">
+          Need a positive message idea? Check this out: <br />
+          <Link
+            href="https://www.brainyquote.com/topics/positive-quotes"
+            target="_blank"
+          >
+            https://www.brainyquote.com/topics/positive-quotes
+          </Link>
         </Typography>
+
+        {errMsg && (
+          <Alert severity="error" variant="outlined" sx={{ marginBottom: 2 }}>
+            {errMsg}
+          </Alert>
+        )}
 
         <form noValidate autoComplete="off" onSubmit={handleSubmit}>
           <TextField
-            error={!validMessage && messageTouched}
             variant="standard"
             label="Message"
             id="message"
@@ -98,8 +106,23 @@ const AddPostForm = () => {
             fullWidth
             required
             aria-invalid={validMessage ? "false" : "true"}
-            onBlur={() => setMessageTouched(true)}
             multiline={true}
+            inputProps={{ maxLength: 500 }}
+            helperText={`${message.length}/500`}
+          />
+
+          <TextField
+            variant="standard"
+            label="Citation/Source"
+            id="citation"
+            autoComplete="off"
+            onChange={(e) => setCitation(e.target.value)}
+            value={citation}
+            size="small"
+            fullWidth
+            inputProps={{ maxLength: 100 }}
+            helperText={`${citation.length}/100`}
+            sx={{ marginTop: 1 }}
           />
           <Button
             className={classes.addPostBtnSpacerTop}
@@ -111,9 +134,6 @@ const AddPostForm = () => {
           </Button>
         </form>
       </CardContent>
-      {/* <CardActions>
-        <Button size="small">Learn More</Button>
-      </CardActions> */}
     </Card>
   );
 };

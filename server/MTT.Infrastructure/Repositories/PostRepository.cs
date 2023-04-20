@@ -23,7 +23,7 @@ public class PostRepository : IPostRepository
     public async Task<List<Post>> RetrieveAsync(int offset, int limit)
     {
         return await _mttDbContext.Posts
-            .OrderBy(b => b.DateCreated)
+            .OrderByDescending(b => b.DateCreated)
             .Skip(offset)
             .Take(limit)
             .ToListAsync();
