@@ -20,7 +20,7 @@ const TopNavigationBar = () => {
   const [open, setOpen] = useState(false);
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+      <AppBar position="static" sx={{ marginBottom: 6 }}>
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             (Beta) Empty Hearts{" "}

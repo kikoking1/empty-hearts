@@ -107,10 +107,18 @@ const AddPostForm = (props) => {
       <CardContent>
         {!auth?.accessToken ? (
           <Typography
-            sx={{ mb: 1.5, fontSize: 18, marginTop: 2 }}
+            sx={{ mb: 1.5, fontSize: 16, marginTop: 2 }}
             color="text.primary"
           >
-            Have a positive message to share with the world? <br />
+            Have a positive message to share with the world?{" "}
+            <SentimentSatisfiedAltSharpIcon
+              sx={{
+                fontSize: 18,
+                verticalAlign: "text-bottom",
+                color: yellow[700],
+              }}
+            />
+            <br />
             <br />
             <Button
               variant="contained"
