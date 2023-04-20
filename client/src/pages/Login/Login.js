@@ -1,40 +1,64 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useReducer } from "react";
 import useAuth from "../../hooks/useAuth";
 import axios from "../../util/axios";
 import { useNavigate } from "react-router-dom";
-import { TextField, Button, Card, Link, Container } from "@mui/material";
+import { TextField, Button, Card, Link, Container, Alert } from "@mui/material";
 import classes from "./Login.module.scss";
 import { PASSWORD_REGEX, RFC2882_EMAIL_REGEX } from "../../util/globals/regex";
+import {
+  UPDATE_FORM,
+  formReducer,
+  onFocusOut,
+  onInputChange,
+} from "../../util/formUtils";
+
+const initialState = {
+  username: { value: "", touched: false, hasError: true, error: "" },
+  password: { value: "", touched: false, hasError: true, error: "" },
+};
+
+const inputValidation = (name, value, formState) => {
+  let hasError = false,
+    error = "";
+  switch (name) {
+    case "username":
+      if (value.trim() === "") {
+        hasError = true;
+        error = "Username cannot be empty.";
+      } else if (!RFC2882_EMAIL_REGEX.test(value)) {
+        hasError = true;
+        error = "Must be valid email syntax.";
+      } else {
+        hasError = false;
+        error = "";
+      }
+      break;
+    case "password":
+      if (value === "") {
+        hasError = true;
+        error = "Password cannot be empty.";
+      } else if (!PASSWORD_REGEX.test(value)) {
+        hasError = true;
+        error =
+          "Must contain at least one uppercase letter, one lowercase letter, one number, one special character, no spaces, and between 8 to 24 characters.";
+      } else {
+        hasError = false;
+        error = "";
+      }
+      break;
+    default:
+      break;
+  }
+  return { hasError, error };
+};
 
 const Login = () => {
+  const [formState, dispatch] = useReducer(formReducer, initialState);
   const { setAuth } = useAuth();
 
-  const usernameRef = useRef();
-  const errRef = useRef();
-
-  const [username, setUsername] = useState("");
-  const [validUsername, setValidUsername] = useState(false);
-  const [usernameTouched, setUsernameTouched] = useState(false);
-
-  const [password, setPassword] = useState("");
-  const [validPassword, setValidPassword] = useState(false);
-  const [passwordTouched, setPasswordTouched] = useState(false);
-
-  const [errMsg, setErrMsg] = useState("");
+  const [apiErrMsg, setApiErrMsg] = useState("");
 
   const navigate = useNavigate();
-
-  useEffect(() => {
-    usernameRef.current.focus();
-  }, []);
-
-  useEffect(() => {
-    setValidUsername(RFC2882_EMAIL_REGEX.test(username));
-  }, [username]);
-
-  useEffect(() => {
-    setValidPassword(PASSWORD_REGEX.test(password));
-  }, [password]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -43,8 +67,8 @@ const Login = () => {
       const response = await axios.post(
         "/api/Auth/login",
         JSON.stringify({
-          username: username.toLowerCase(),
-          password: password,
+          username: formState.username.value.toLowerCase(),
+          password: formState.password.value,
         }),
         {
           headers: { "Content-Type": "application/json" },
@@ -62,75 +86,126 @@ const Login = () => {
         }
       });
 
-      setAuth({ username, password, roles, accessToken });
-      setUsername("");
-      setPassword("");
+      setAuth({
+        username: formState.username.value.toLowerCase(),
+        password: formState.password.value,
+        roles,
+        accessToken,
+      });
+      // Reset state
+      for (const name in formState) {
+        dispatch({
+          type: UPDATE_FORM,
+          data: {
+            name,
+            value: "",
+            hasError: true,
+            error: "",
+            touched: false,
+            isFormValid: false,
+          },
+        });
+      }
+      setApiErrMsg("");
+
       navigate("/posts", { replace: true });
     } catch (err) {
       if (!err?.response) {
-        setErrMsg("No Server Response");
-      } else if (err.response?.status === 409) {
-        setErrMsg("Username Taken");
+        setApiErrMsg("Login failed. Please try again later.");
       } else {
-        setErrMsg("Registration Failed");
+        setApiErrMsg(err?.response?.data);
       }
-      errRef.current.focus();
     }
   };
 
   return (
     <Container maxWidth="sm">
       <Card className={classes.loginCard} variant="outlined">
-        <p
-          ref={errRef}
-          className={errMsg ? "errmsg" : "offscreen"}
-          aria-live="assertive"
-        >
-          {errMsg}
-        </p>
         <h1>Login</h1>
-
+        {apiErrMsg && (
+          <Alert severity="error" variant="outlined" sx={{ marginBottom: 3 }}>
+            {apiErrMsg}
+          </Alert>
+        )}
         <form noValidate autoComplete="off" onSubmit={handleSubmit}>
           <TextField
-            error={!validUsername && usernameTouched}
+            error={formState.username.hasError && formState.username.touched}
             variant="standard"
             type="email"
             label="Username"
             id="username"
-            ref={usernameRef}
             autoComplete="off"
-            onChange={(e) => setUsername(e.target.value)}
-            value={username}
+            onChange={(e) =>
+              onInputChange(
+                "username",
+                e.target.value,
+                dispatch,
+                formState,
+                inputValidation
+              )
+            }
+            value={formState.username.value}
             size="small"
             fullWidth
             required
-            aria-invalid={validUsername ? "false" : "true"}
-            onBlur={() => setUsernameTouched(true)}
-            helperText={"must be valid email syntax"}
+            onBlur={(e) =>
+              onFocusOut(
+                "username",
+                e.target.value,
+                dispatch,
+                formState,
+                inputValidation
+              )
+            }
+            helperText={
+              formState.username.hasError &&
+              formState.username.touched &&
+              formState.username.error
+            }
           />
 
           <TextField
             label="Password"
-            error={!validPassword && passwordTouched}
+            error={formState.password.hasError && formState.password.touched}
             variant="standard"
             type="password"
             id="password"
             autoComplete="off"
-            onInput={(e) => setPassword(e.target.value)}
-            value={password}
+            onChange={(e) =>
+              onInputChange(
+                "password",
+                e.target.value,
+                dispatch,
+                formState,
+                inputValidation
+              )
+            }
+            value={formState.password.value}
             size="small"
             fullWidth
             required
-            aria-invalid={validPassword ? "false" : "true"}
-            onBlur={() => setPasswordTouched(true)}
-            helperText="Must contain at least one uppercase letter, one lowercase letter, one number, one special character and between 8 to 24 characters."
+            onBlur={(e) =>
+              onFocusOut(
+                "password",
+                e.target.value,
+                dispatch,
+                formState,
+                inputValidation
+              )
+            }
+            helperText={
+              formState.password.hasError &&
+              formState.password.touched &&
+              formState.password.error
+            }
+            inputProps={{ maxLength: 24 }}
           />
 
           <Button
             className={classes.loginBtnSpacerTop}
             variant="contained"
             type="submit"
-            disabled={!validUsername || !validPassword ? true : false}
+            disabled={!formState.isFormValid}
           >
             Login
           </Button>

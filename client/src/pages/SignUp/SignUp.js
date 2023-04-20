@@ -41,7 +41,7 @@ const inputValidation = (name, value, formState) => {
       } else if (!PASSWORD_REGEX.test(value)) {
         hasError = true;
         error =
-          "Must contain at least one uppercase letter, one lowercase letter, one number, one special character and between 8 to 24 characters.";
+          "Must contain at least one uppercase letter, one lowercase letter, one number, one special character, no spaces, and between 8 to 24 characters.";
       } else {
         hasError = false;
         error = "";
@@ -65,7 +65,7 @@ const inputValidation = (name, value, formState) => {
 const SignUp = () => {
   const [formState, dispatch] = useReducer(formReducer, initialState);
 
-  const [errApiMsg, setApiErrMsg] = useState("");
+  const [apiErrMsg, setApiErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
 
   const navigate = useNavigate();
@@ -116,9 +116,9 @@ const SignUp = () => {
     <Container maxWidth="sm">
       <Card className={classes.signupCard} variant="outlined">
         <h1>Register</h1>
-        {errApiMsg && (
+        {apiErrMsg && (
           <Alert severity="error" variant="outlined" sx={{ marginBottom: 3 }}>
-            {errApiMsg}
+            {apiErrMsg}
           </Alert>
         )}
 
@@ -132,7 +132,7 @@ const SignUp = () => {
                   navigate("/login");
                 }}
               >
-                Sign In
+                Log In
               </Link>
             </p>
           </section>
@@ -187,7 +187,7 @@ const SignUp = () => {
                 type="password"
                 id="password"
                 autoComplete="off"
-                onInput={(e) =>
+                onChange={(e) =>
                   onInputChange(
                     "password",
                     e.target.value,
@@ -215,7 +215,7 @@ const SignUp = () => {
                   formState.password.touched &&
                   formState.password.error
                 }
-                // helperText="Must contain at least one uppercase letter, one lowercase letter, one number, one special character and between 8 to 24 characters."
+                inputProps={{ maxLength: 24 }}
               />
 
               <TextField
@@ -228,7 +228,7 @@ const SignUp = () => {
                 type="password"
                 id="confirm_password"
                 autoComplete="off"
-                onInput={(e) =>
+                onChange={(e) =>
                   onInputChange(
                     "passwordMatch",
                     e.target.value,
@@ -258,6 +258,7 @@ const SignUp = () => {
                   formState.passwordMatch.touched &&
                   formState.passwordMatch.error
                 }
+                inputProps={{ maxLength: 24 }}
               />
 
               <Button
@@ -280,7 +281,7 @@ const SignUp = () => {
                   navigate("/login");
                 }}
               >
-                Sign In
+                Log In
               </Link>
             </p>
           </>
