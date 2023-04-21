@@ -1,4 +1,4 @@
-# deploying and startup on new ec2 server
+# Deploying, and Starting up, this Project on a New ec2 Server
 
 REQUIRES: ubuntu 20.04 ec2 t2.small instance (defaults on the rest)
 
