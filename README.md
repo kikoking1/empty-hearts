@@ -1,3 +1,5 @@
+NOTE: This project can be viewed live at [https://empty-hearts.com/](https://empty-hearts.com/)
+
 # Deploying, and Starting up, this Project on a New ec2 Server
 
 REQUIRES: ubuntu 20.04 ec2 t2.small instance (defaults on the rest)
