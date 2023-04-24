@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Container } from "@mui/material";
-import AddPostForm from "../../components/AddPostForm.js/AddPostForm";
+import AddPostForm from "../../components/AddPostForm/AddPostForm";
 import PostFeed from "../../components/PostFeed/PostFeed";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
