@@ -15,6 +15,12 @@ public class UserRepository : IUserRepository
         _mttDbContext = mttDbContext;
     }
     
+    public async Task<User?> GetByIdAsync(Guid userId)
+    {
+        return await _mttDbContext.Users
+            .FirstOrDefaultAsync(entity => entity.Id == userId);
+    }
+    
     public async Task<User?> RetrieveByUsernameAsync(string username)
     {
         return await _mttDbContext.Users
@@ -24,6 +30,14 @@ public class UserRepository : IUserRepository
     public async Task AddAsync(User user)
     {
         await _mttDbContext.AddAsync(user);
+        await _mttDbContext.SaveChangesAsync();
+    }
+    
+    public async Task UpdateAsync(User user)
+    {
+        user.DateModified = DateTime.UtcNow;
+
+        _mttDbContext.Update(user);
         await _mttDbContext.SaveChangesAsync();
     }
 }

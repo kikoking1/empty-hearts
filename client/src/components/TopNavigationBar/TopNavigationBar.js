@@ -14,10 +14,14 @@ import { Hidden, SwipeableDrawer, IconButton } from "@mui/material";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+
 const TopNavigationBar = () => {
   const { auth, setAuth } = useAuth();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+
+  const axiosPrivate = useAxiosPrivate();
 
   const navItems = [
     {
@@ -44,7 +48,8 @@ const TopNavigationBar = () => {
   } else {
     navItems.push({
       name: "Log Out",
-      clickHandler: () => {
+      clickHandler: async () => {
+        await axiosPrivate.get("/api/Auth/Logout");
         setAuth({});
         navigate("/posts");
       },

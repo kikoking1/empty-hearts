@@ -27,7 +27,7 @@ public class UserServiceTests
         
         Mock<ITokenService> tokenServiceMock = new();
         tokenServiceMock
-            .Setup(mock => mock.CreateToken(It.IsAny<User>()))
+            .Setup(mock => mock.CreateAccessToken(It.IsAny<User>()))
             .Returns(_fixture.Create<string>());
 
         _sut = new UserService(_userRepositoryMock.Object, tokenServiceMock.Object, _mapper);

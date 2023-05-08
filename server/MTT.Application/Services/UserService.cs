@@ -64,13 +64,13 @@ public class UserService : IUserService
         };
     }
 
-    public async Task<ResultType<string>> LoginAsync(UserLogin userLogin)
+    public async Task<ResultType<LoginTokens>> LoginAsync(UserLogin userLogin)
     {
         var existingUser = await _userRepository.RetrieveByUsernameAsync(userLogin.Username);
         
         if (existingUser == null)
         {
-            return new ResultType<string>
+            return new ResultType<LoginTokens>
             {
                 StatusCode = StatusCodes.Status400BadRequest,
                 ErrorMessage = FailedLoginMessage,
@@ -79,19 +79,24 @@ public class UserService : IUserService
 
         if (!BCrypt.Net.BCrypt.Verify(userLogin.Password, existingUser.PasswordHash))
         {
-            return new ResultType<string>
+            return new ResultType<LoginTokens>
             {
                 StatusCode = StatusCodes.Status400BadRequest,
                 ErrorMessage = FailedLoginMessage,
             };
         }
 
-        var token = _tokenService.CreateToken(existingUser);
-        
-        return new ResultType<string>
+        var token = _tokenService.CreateAccessToken(existingUser);
+        var refreshToken = _tokenService.CreateRefreshToken(existingUser);
+
+        return new ResultType<LoginTokens>
         {
             StatusCode = StatusCodes.Status200OK,
-            Data = token,
+            Data = new LoginTokens
+            {
+                AccessToken = token,
+                RefreshToken = refreshToken,
+            }
         };
     }
 }

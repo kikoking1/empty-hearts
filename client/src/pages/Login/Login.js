@@ -1,8 +1,18 @@
-import { useState, useReducer } from "react";
+import { useState, useEffect, useReducer } from "react";
 import useAuth from "../../hooks/useAuth";
 import axios from "../../util/axios";
 import { useNavigate } from "react-router-dom";
-import { TextField, Button, Card, Link, Container, Alert } from "@mui/material";
+import {
+  TextField,
+  Button,
+  Card,
+  Link,
+  Container,
+  Alert,
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
+} from "@mui/material";
 import classes from "./Login.module.scss";
 import { PASSWORD_REGEX, RFC2882_EMAIL_REGEX } from "../../util/regex";
 import {
@@ -15,6 +25,7 @@ import {
 const initialState = {
   username: { value: "", touched: false, hasError: true, error: "" },
   password: { value: "", touched: false, hasError: true, error: "" },
+  keepMeLoggedIn: { value: "", touched: false, hasError: false, error: "" },
 };
 
 const inputValidation = (name, value, formState) => {
@@ -54,7 +65,7 @@ const inputValidation = (name, value, formState) => {
 
 const Login = () => {
   const [formState, dispatch] = useReducer(formReducer, initialState);
-  const { setAuth } = useAuth();
+  const { setAuth, persist, setPersist } = useAuth();
 
   const [apiErrMsg, setApiErrMsg] = useState("");
 
@@ -64,6 +75,12 @@ const Login = () => {
     e.preventDefault();
 
     try {
+      const persistCheckbox =
+        formState.keepMeLoggedIn.value === "on" ? true : false;
+      localStorage.setItem("persist", persistCheckbox);
+
+      setPersist(persistCheckbox);
+
       const response = await axios.post(
         "/api/Auth/login",
         JSON.stringify({
@@ -201,6 +218,44 @@ const Login = () => {
             }
             inputProps={{ maxLength: 24 }}
           />
+
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  onChange={(e) =>
+                    onInputChange(
+                      "keepMeLoggedIn",
+                      e.target.value,
+                      dispatch,
+                      formState,
+                      inputValidation
+                    )
+                  }
+                  checked={formState.keepMeLoggedIn.value}
+                />
+              }
+              label="Trust This Device (keep me logged in)"
+            />
+          </FormGroup>
+
+          {/* <TextField
+            variant="standard"
+            type="checkbox"
+            label="Author/Source"
+            id="citation"
+            autoComplete="off"
+            onChange={(e) =>
+              onInputChange(
+                "keepMeLoggedIn",
+                e.target.value,
+                dispatch,
+                formState,
+                inputValidation
+              )
+            }
+            value={formState.keepMeLoggedIn.value}
+          /> */}
 
           <Button
             className={classes.loginBtnSpacerTop}

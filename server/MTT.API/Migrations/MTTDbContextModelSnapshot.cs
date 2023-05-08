@@ -60,10 +60,6 @@ namespace MTT.API.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("RefreshToken")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("TEXT");

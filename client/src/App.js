@@ -10,6 +10,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { blueGrey } from "@mui/material/colors";
 import TopNavigationBar from "./components/TopNavigationBar/TopNavigationBar";
+import PersistLogin from "./components/PersistLogin/PersistLogin";
 
 const ROLES = {
   User: "User",
@@ -50,7 +51,9 @@ function App() {
           <Route path="login" element={<Login />} />
           <Route path="signup" element={<SignUp />} />
           <Route path="unauthorized" element={<Unauthorized />} />
-          <Route path="/posts" element={<Posts />} />
+          <Route element={<PersistLogin />}>
+            <Route path="/posts" element={<Posts />} />
+          </Route>
           <Route path="/" element={<Home />} />
 
           {/* we want to protect these routes (NOTE: none to protect, yet!) */}

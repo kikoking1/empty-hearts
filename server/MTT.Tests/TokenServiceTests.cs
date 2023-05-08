@@ -17,6 +17,7 @@ public class TokenServiceTests
     private readonly Fixture _fixture;
     private readonly Mock<IHttpContextAccessor> _httpContextAccessor;
     private readonly Mock<IOptions<AuthSettings>> _authSettings;
+    private readonly Mock<IUserRepository> _userRepository;
 
     public TokenServiceTests()
     {
@@ -24,8 +25,9 @@ public class TokenServiceTests
         _httpContextAccessor = new Mock<IHttpContextAccessor>();
         _authSettings = new Mock<IOptions<AuthSettings>>();
         _authSettings.SetupGet(x => x.Value).Returns(_fixture.Create<AuthSettings>());
+        _userRepository = new Mock<IUserRepository>();
 
-        _sut = new TokenService(_httpContextAccessor.Object, _authSettings.Object);
+        _sut = new TokenService(_httpContextAccessor.Object, _authSettings.Object, _userRepository.Object);
     }
     
     [Fact]
