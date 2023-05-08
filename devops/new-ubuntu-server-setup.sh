@@ -4,6 +4,7 @@ curl -sL https://deb.nodesource.com/setup_19.x -o /tmp/nodesource_setup.sh
 bash /tmp/nodesource_setup.sh
 rm /tmp/nodesource_setup.sh
 apt-get install -y nodejs
+apt-get install jq -y
 
 #build react app
 cd /home/ubuntu/apps/empty-hearts-app/empty-hearts/client
@@ -52,7 +53,11 @@ rm packages-microsoft-prod.deb
 apt-get update && apt-get install -y dotnet-sdk-7.0
 dotnet publish --configuration Release
 
+# change jwt secret key to random guid
 cd /home/ubuntu/apps/empty-hearts-app/empty-hearts/server/MTT.API/bin/Release/net7.0/publish/
+appsettingsPath="/home/ubuntu/apps/empty-hearts-app/empty-hearts/server/MTT.API/bin/Release/net7.0/publish/appsettings.json"
+echo -E "$(jq --arg secret_key "$(uuidgen)" '.AuthSettings.JwtSigningKey |= $secret_key' ${appsettingsPath})" > ${appsettingsPath}
+
 touch /etc/systemd/system/empty-hearts.service
 
 cat > /etc/systemd/system/empty-hearts.service <<'endmsg'
