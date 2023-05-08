@@ -25,6 +25,7 @@ const TopNavigationBar = () => {
 
   const navItems = [
     {
+      id: 1,
       name: "Post Feed",
       clickHandler: () => {
         navigate("/posts");
@@ -34,12 +35,14 @@ const TopNavigationBar = () => {
 
   if (!auth?.accessToken) {
     navItems.push({
+      id: 2,
       name: "Log In",
       clickHandler: () => {
         navigate("/login");
       },
     });
     navItems.push({
+      id: 3,
       name: "Sign Up",
       clickHandler: () => {
         navigate("/signup");
@@ -47,6 +50,7 @@ const TopNavigationBar = () => {
     });
   } else {
     navItems.push({
+      id: 4,
       name: "Log Out",
       clickHandler: async () => {
         await axiosPrivate.get("/api/Auth/Logout");
@@ -77,13 +81,15 @@ const TopNavigationBar = () => {
               color="inherit"
               aria-label="menu"
               sx={{ mr: 2 }}
+              onClick={() => setOpen(true)}
             >
-              <MenuIcon onClick={() => setOpen(true)} />
+              <MenuIcon />
             </IconButton>
           </Hidden>
           <Hidden smDown>
             {navItems.map((item) => (
               <Button
+                key={item.id}
                 color={"inherit"}
                 sx={{ textAlign: "center" }}
                 onClick={item.clickHandler}
@@ -100,14 +106,15 @@ const TopNavigationBar = () => {
           onClose={() => setOpen(false)}
         >
           <div>
-            <IconButton>
-              <ChevronRightIcon onClick={() => setOpen(false)} />
+            <IconButton onClick={() => setOpen(false)}>
+              <ChevronRightIcon />
             </IconButton>
           </div>
 
           <List>
             {navItems.map((item) => (
               <ListItem
+                key={item.id}
                 button
                 onClick={item.clickHandler}
                 color={"text.primary"}
