@@ -57,6 +57,7 @@ dotnet publish --configuration Release
 cd /home/ubuntu/apps/empty-hearts-app/empty-hearts/server/MTT.API/bin/Release/net7.0/publish/
 appsettingsPath="/home/ubuntu/apps/empty-hearts-app/empty-hearts/server/MTT.API/bin/Release/net7.0/publish/appsettings.json"
 echo -E "$(jq --arg secret_key "$(uuidgen)" '.AuthSettings.JwtSigningKey |= $secret_key' ${appsettingsPath})" > ${appsettingsPath}
+echo -E "$(jq --arg secret_key "$(uuidgen)" '.AuthSettings.JwtRefreshTokenSigningKey |= $secret_key' ${appsettingsPath})" > ${appsettingsPath}
 
 touch /etc/systemd/system/empty-hearts.service
 

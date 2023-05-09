@@ -1,6 +1,6 @@
 NOTE: This project can be viewed live at [https://empty-hearts.com/](https://empty-hearts.com/)
 
-# Deploying, and Starting up, this Project on a New ec2 Server
+# Initial Deployment Setup on a New Ubuntu ec2 Server
 
 REQUIRES: ubuntu 20.04 ec2 t2.small instance (defaults on the rest)
 
@@ -26,3 +26,19 @@ bash /home/ubuntu/apps/empty-hearts-app/empty-hearts/devops/new-ubuntu-server-se
 NOTE: the only prompts should be the certbot prompts at the very end.
 
 Put in a real email, say yes twice, and it should be live
+
+# Deployment Updates Ubuntu ec2 Server
+
+```
+ssh -i "C:\Users\kiko\.ssh\kikos_aws\aws_mth_key.pem" ubuntu@ec2-3-97-206-45.ca-central-1.compute.amazonaws.com
+
+# once connected, execute the following
+sudo -s
+
+# get latest version of app from github
+cd /home/ubuntu/apps/empty-hearts-app/empty-hearts/
+git pull
+
+# let the updated devops file take care of the rest
+bash /home/ubuntu/apps/empty-hearts-app/empty-hearts/devops/deploy-updates-to-ubuntu-server.sh
+```
