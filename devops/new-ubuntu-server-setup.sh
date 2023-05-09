@@ -5,6 +5,7 @@ bash /tmp/nodesource_setup.sh
 rm /tmp/nodesource_setup.sh
 apt-get install -y nodejs
 apt-get install jq -y
+sudo apt install sqlite3
 
 #build react app
 cd /home/ubuntu/apps/empty-hearts-app/empty-hearts/client
