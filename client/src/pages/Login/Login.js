@@ -25,7 +25,7 @@ import {
 const initialState = {
   username: { value: "", touched: false, hasError: true, error: "" },
   password: { value: "", touched: false, hasError: true, error: "" },
-  keepMeLoggedIn: { value: "", touched: false, hasError: false, error: "" },
+  keepMeLoggedIn: { value: true, touched: false, hasError: false, error: "" },
 };
 
 const inputValidation = (name, value, formState) => {
@@ -76,7 +76,7 @@ const Login = () => {
 
     try {
       const persistCheckbox =
-        formState.keepMeLoggedIn.value === "on" ? true : false;
+        formState.keepMeLoggedIn.value === true ? true : false;
       localStorage.setItem("persist", persistCheckbox);
 
       setPersist(persistCheckbox);
@@ -226,7 +226,7 @@ const Login = () => {
                   onChange={(e) =>
                     onInputChange(
                       "keepMeLoggedIn",
-                      e.target.value,
+                      e.target.checked,
                       dispatch,
                       formState,
                       inputValidation
@@ -235,27 +235,9 @@ const Login = () => {
                   checked={formState.keepMeLoggedIn.value}
                 />
               }
-              label="Trust This Device (keep me logged in)"
+              label="Keep me logged in"
             />
           </FormGroup>
-
-          {/* <TextField
-            variant="standard"
-            type="checkbox"
-            label="Author/Source"
-            id="citation"
-            autoComplete="off"
-            onChange={(e) =>
-              onInputChange(
-                "keepMeLoggedIn",
-                e.target.value,
-                dispatch,
-                formState,
-                inputValidation
-              )
-            }
-            value={formState.keepMeLoggedIn.value}
-          /> */}
 
           <Button
             className={classes.loginBtnSpacerTop}
