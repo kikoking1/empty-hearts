@@ -33,7 +33,7 @@ public class PostServiceTests
 
         _postRepositoryMock
             .Setup(mock => mock.RetrieveByIdAsync(
-                It.IsAny<Guid>()))
+                It.IsAny<Guid>(), It.IsAny<Guid>()))
             .ReturnsAsync(post);
         
         var result = await _sut.RetrieveByIdAsync(id);
@@ -50,7 +50,7 @@ public class PostServiceTests
 
         _postRepositoryMock
             .Setup(mock => mock.RetrieveByIdAsync(
-                It.IsAny<Guid>()))
+                It.IsAny<Guid>(), It.IsAny<Guid>()))
             .ReturnsAsync(post);
         
         var result = await _sut.RetrieveByIdAsync(It.IsAny<Guid>());
@@ -84,7 +84,7 @@ public class PostServiceTests
         var posts = _fixture.Create<List<Post>>();
 
         _postRepositoryMock
-            .Setup(mock => mock.RetrieveAsync(offset, limit))
+            .Setup(mock => mock.RetrieveAsync(offset, limit, It.IsAny<Guid>()))
             .ReturnsAsync(posts);
         
         var result = await _sut.RetrieveAsync(offset, limit);
@@ -177,7 +177,7 @@ public class PostServiceTests
         
         _postRepositoryMock
             .Setup(mock => mock.RetrieveByIdAsync(
-                It.IsAny<Guid>()))
+                It.IsAny<Guid>(), It.IsAny<Guid>()))
             .ReturnsAsync(null as Post);
         
         var result = await _sut.UpdateAsync(post);
@@ -194,7 +194,7 @@ public class PostServiceTests
         
         _postRepositoryMock
             .Setup(mock => mock.RetrieveByIdAsync(
-                It.IsAny<Guid>()))
+                It.IsAny<Guid>(), It.IsAny<Guid>()))
             .ReturnsAsync(post);
         
         var result = await _sut.UpdateAsync(post);
