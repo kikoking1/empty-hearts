@@ -24,7 +24,7 @@ const PostFeed = (props) => {
           }}
           color="text.secondary"
         >
-          No posts yet... <br /> Be the first to mae a post!
+          No posts yet... <br /> Be the first to make a post!
         </Typography>
       )}
       {props.posts.map((post) => {

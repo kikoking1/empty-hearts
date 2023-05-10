@@ -21,6 +21,8 @@ builder.Services.AddScoped<IPostRepository, PostRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<ILikeService, LikeService>();
+builder.Services.AddScoped<ILikeRepository, LikeRepository>();
 builder.Services.Configure<AuthSettings>(config.GetRequiredSection("AuthSettings"));
 
 builder.Services.AddControllers();
@@ -84,7 +86,6 @@ using (var scope = app.Services.CreateScope())
 app.UseCors();
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
 
 app.MapControllers();

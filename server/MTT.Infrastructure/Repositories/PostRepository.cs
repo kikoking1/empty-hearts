@@ -14,18 +14,49 @@ public class PostRepository : IPostRepository
         _mttDbContext = mttDbContext;
     }
 
-    public async Task<Post?> RetrieveByIdAsync(Guid? id)
+    public async Task<Post?> RetrieveByIdAsync(Guid id, Guid userId)
     {
         return await _mttDbContext.Posts
-            .FirstOrDefaultAsync(entity => entity.Id == id);
+            .Where(post => post.Id == id)
+            .GroupJoin(
+                _mttDbContext.Likes,
+                post => post.Id,
+                like => like.PostId,
+                (post, likes) => new { Post = post, LikesCount = likes.Count(), LikedByUser = likes.Any(l => l.UserId == userId) })
+            .Select(pl => new Post
+            {
+                Id = pl.Post.Id,
+                UserId = pl.Post.UserId,
+                Body = pl.Post.Body,
+                DateCreated = pl.Post.DateCreated,
+                DateModified = pl.Post.DateModified,
+                LikeCount = pl.LikesCount,
+                LikedByUser = pl.LikedByUser
+            })
+            .FirstOrDefaultAsync();
     }
     
-    public async Task<List<Post>> RetrieveAsync(int offset, int limit)
+    public async Task<List<Post>> RetrieveAsync(int offset, int limit, Guid userId)
     {
         return await _mttDbContext.Posts
-            .OrderByDescending(b => b.DateCreated)
+            .OrderByDescending(b => b.Id)
             .Skip(offset)
             .Take(limit)
+            .GroupJoin(
+                _mttDbContext.Likes,
+                post => post.Id,
+                like => like.PostId,
+                (post, likes) => new { Post = post, LikesCount = likes.Count(), LikedByUser = likes.Any(l => l.UserId == userId) })
+            .Select(pl => new Post
+            {
+                Id = pl.Post.Id,
+                UserId = pl.Post.UserId,
+                Body = pl.Post.Body,
+                DateCreated = pl.Post.DateCreated,
+                DateModified = pl.Post.DateModified,
+                LikeCount = pl.LikesCount,
+                LikedByUser = pl.LikedByUser
+            })
             .ToListAsync();
     }
     

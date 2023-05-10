@@ -12,11 +12,16 @@ public class MTTDbContext : DbContext
     
     public virtual DbSet<Post> Posts { get; set; }
     public virtual DbSet<User> Users { get; set; }
+    public virtual DbSet<Like> Likes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Post>().ToTable("Posts");
+        modelBuilder.Entity<Post>().ToTable("Posts")
+            .Ignore(c => c.LikedByUser)
+            .Ignore(c => c.LikeCount);
         modelBuilder.Entity<User>().ToTable("Users");
+        modelBuilder.Entity<Like>().ToTable("Likes");
+
         
         base.OnModelCreating(modelBuilder);
     }

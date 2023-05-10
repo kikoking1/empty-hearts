@@ -29,6 +29,9 @@ public class PostController : ControllerBase
     }
     
     [HttpGet]
+    // TODO: for some reason this Authorize/AllowAnonymous combo works from the frontend react, but not when done in swagger
+    [Authorize]
+    [AllowAnonymous]
     [Route("{offset}/{limit}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

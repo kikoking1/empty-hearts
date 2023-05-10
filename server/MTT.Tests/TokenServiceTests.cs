@@ -7,6 +7,7 @@ using Moq;
 using MTT.Application.Services;
 using MTT.Core.Configuration;
 using MTT.Core.Interfaces;
+using MTT.Core.Models;
 using Xunit;
 
 namespace MTT.Tests;
@@ -69,6 +70,15 @@ public class TokenServiceTests
         result.Data.Should().NotBeEmpty();
         result.ErrorMessage.Should().BeNull();
         result.StatusCode.Should().Be(StatusCodes.Status200OK);
+    }
+    
+    [Fact]
+    public void CreateAccessToken_Should_Return_Access_Token_When_Successfully_Creates_Access_Token()
+    {
+        var user = _fixture.Create<User>();
+        var result = _sut.CreateAccessToken(user);
+
+        result.Should().NotBeEmpty();
     }
     
     private DefaultHttpContext CreateExpectedDefaultHttpContext()

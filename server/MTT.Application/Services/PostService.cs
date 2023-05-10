@@ -19,7 +19,11 @@ public class PostService : IPostService
 
     public async Task<ResultType<Post>> RetrieveByIdAsync(Guid id)
     {
-        var post = await _postRepository.RetrieveByIdAsync(id);
+        var sessionUserIdResult = _tokenService.GetSessionUserId();
+        
+        var userId = sessionUserIdResult.Data;
+        
+        var post = await _postRepository.RetrieveByIdAsync(id, userId);
         
         if (post == null)
         {
@@ -39,6 +43,10 @@ public class PostService : IPostService
     
     public async Task<ResultType<List<Post>>> RetrieveAsync(int offset, int limit)
     {
+        var sessionUserIdResult = _tokenService.GetSessionUserId();
+        
+        var userId = sessionUserIdResult.Data;
+        
         if (limit > 100 || limit < 1 || offset < 0)
         {
             return new ResultType<List<Post>>
@@ -51,7 +59,7 @@ public class PostService : IPostService
         return new ResultType<List<Post>>
         {
             StatusCode = StatusCodes.Status200OK,
-            Data = await _postRepository.RetrieveAsync(offset, limit)
+            Data = await _postRepository.RetrieveAsync(offset, limit, userId)
         };
     }
     
@@ -90,6 +98,19 @@ public class PostService : IPostService
     
     public async Task<ResultType<Post>> UpdateAsync(Post post)
     {
+        var sessionUserIdResult = _tokenService.GetSessionUserId();
+        
+        if (sessionUserIdResult.ErrorMessage != null)
+        {
+            return new ResultType<Post>
+            {
+                StatusCode = sessionUserIdResult.StatusCode,
+                ErrorMessage = sessionUserIdResult.ErrorMessage
+            };
+        }
+        
+        var userId = sessionUserIdResult.Data;
+        
         if (post.Id == null)
         {
             return new ResultType<Post>
@@ -99,7 +120,7 @@ public class PostService : IPostService
             };
         }
         
-        var existingPost = await _postRepository.RetrieveByIdAsync(post.Id);
+        var existingPost = await _postRepository.RetrieveByIdAsync(post.Id.Value, userId);
 
         if (existingPost == null)
         {
