@@ -1,4 +1,6 @@
 # rebuild and restart dotnet app
+systemctl stop empty-hearts.service
+
 cd /home/ubuntu/apps/empty-hearts-app/empty-hearts/server/
 dotnet publish --configuration Release
 
@@ -9,7 +11,7 @@ echo -E "$(jq --arg secret_key "$(uuidgen)" --arg secret_refresh_key "$(uuidgen)
 # apply db migrations
 dotnet ef database update --project /home/ubuntu/apps/empty-hearts-app/empty-hearts/server/MTT.API/MTT.API.csproj
 
-systemctl restart empty-hearts.service
+systemctl start empty-hearts.service
 
 # rebuild and restart react app
 cd /home/ubuntu/apps/empty-hearts-app/empty-hearts/client
