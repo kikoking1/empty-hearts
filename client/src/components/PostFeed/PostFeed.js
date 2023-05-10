@@ -28,7 +28,13 @@ const PostFeed = (props) => {
         </Typography>
       )}
       {props.posts.map((post) => {
-        return <Post post={post} key={post.id} />;
+        return (
+          <Post
+            key={post.id}
+            post={post}
+            handleLikeButtonClick={props.handleLikeButtonClick}
+          />
+        );
       })}
     </div>
   );

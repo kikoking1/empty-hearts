@@ -28,14 +28,14 @@ public class LikeController : ControllerBase
     }
     
     [HttpDelete]
-    [Route("{likeId}")]
+    [Route("{postId}")]
     [Authorize]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult> DeleteLikeAsync(Guid likeId, Guid postId)
+    public async Task<ActionResult> DeleteLikeAsync(Guid postId)
     {
-        var result = await _likeService.DeleteLikeAsync(likeId);
+        var result = await _likeService.DeleteLikeAsync(postId);
         return StatusCode(result.StatusCode, result.ErrorMessage ?? result.Data);
     }
 }

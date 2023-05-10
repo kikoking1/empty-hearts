@@ -14,10 +14,10 @@ public class LikeRepository : ILikeRepository
         _mttDbContext = mttDbContext;
     }
 
-    public async Task<Like?> RetrieveByLikeIdAndUserIdAsync(Guid id, Guid userId)
+    public async Task<Like?> RetrieveByPostIdAndUserIdAsync(Guid postId, Guid userId)
     {
         return await _mttDbContext.Likes
-            .FirstOrDefaultAsync(entity => entity.Id == id && entity.UserId == userId);
+            .FirstOrDefaultAsync(entity => entity.PostId == postId && entity.UserId == userId);
     }
 
     public async Task AddAsync(Like like)

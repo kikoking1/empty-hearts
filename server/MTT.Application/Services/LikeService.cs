@@ -61,7 +61,7 @@ public class LikeService : ILikeService
         };
     }
     
-    public async Task<ResultType<object>> DeleteLikeAsync(Guid likeId)
+    public async Task<ResultType<object>> DeleteLikeAsync(Guid postId)
     {
         var sessionUserIdResult = _tokenService.GetSessionUserId();
         
@@ -76,7 +76,7 @@ public class LikeService : ILikeService
         
         var userId = sessionUserIdResult.Data;
 
-        var like = await _likeRepository.RetrieveByLikeIdAndUserIdAsync(likeId, userId);
+        var like = await _likeRepository.RetrieveByPostIdAndUserIdAsync(postId, userId);
 
         if (like == null)
         {
