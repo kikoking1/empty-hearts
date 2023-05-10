@@ -29,6 +29,7 @@ public class PostController : ControllerBase
     }
     
     [HttpGet]
+    [AllowAnonymous]
     [Route("{offset}/{limit}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
