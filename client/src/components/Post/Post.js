@@ -4,13 +4,16 @@ import { Card, Typography, CardContent } from "@mui/material";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { red } from "@mui/material/colors";
+import useAuth from "../../hooks/useAuth";
 
 const Post = (props) => {
+  const { auth } = useAuth();
+
   const heartIconStyles = {
     fontSize: 18,
     verticalAlign: "text-bottom",
     color: red[700],
-    cursor: "pointer",
+    cursor: !auth?.accessToken ? "default" : "pointer",
   };
   return (
     <Card

@@ -3,12 +3,12 @@ import { Container } from "@mui/material";
 import AddPostForm from "../../components/AddPostForm/AddPostForm";
 import PostFeed from "../../components/PostFeed/PostFeed";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import useAuth from "../../hooks/useAuth";
 
 const Posts = () => {
+  const { auth } = useAuth();
   const axiosPrivate = useAxiosPrivate();
-
   const [apiErrMsg, setApiErrMsg] = useState("");
-
   const [posts, setPosts] = useState([]);
 
   const handleLoadPosts = async () => {
@@ -30,7 +30,8 @@ const Posts = () => {
   };
 
   const handleLikeButtonClick = async (post) => {
-    console.log("clicked");
+    if (!auth?.accessToken) return;
+
     let isSuccess = false;
 
     try {
