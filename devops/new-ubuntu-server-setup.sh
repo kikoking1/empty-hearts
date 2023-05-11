@@ -80,11 +80,6 @@ endmsg
 systemctl enable empty-hearts.service
 systemctl start empty-hearts.service
 
-# install ef core, and run migrations
-dotnet tool install --global dotnet-ef
-dotnet tool update --global dotnet-ef
-/root/.dotnet/tools/dotnet-ef database update --project /home/ubuntu/apps/empty-hearts-app/empty-hearts/server/MTT.API/MTT.API.csproj
-
 #install certbot ssl let's encrypt certificate
 snap install --classic certbot
 ln -s /snap/bin/certbot /usr/bin/certbot

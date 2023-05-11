@@ -76,6 +76,12 @@ const Posts = () => {
     handleLoadPosts();
   }, []);
 
+  useEffect(() => {
+    if (!auth?.accessToken) {
+      handleLoadPosts();
+    }
+  }, [auth?.accessToken]);
+
   return (
     <Container maxWidth="sm">
       <h1>Post Feed</h1>
