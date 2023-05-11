@@ -36,6 +36,7 @@ public class PostController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<Post>> RetrievePostsAsync(int offset, int limit)
     {
+        throw new NotImplementedException();
         var result = await _postService.RetrieveAsync(offset, limit);
         return StatusCode(result.StatusCode, result.ErrorMessage ?? (object) result.Data);
     }

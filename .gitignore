@@ -462,3 +462,4 @@ $RECYCLE.BIN/
 ## CUSTOM
 ##
 appsettings.Development.json
+webapi-exceptions-log.txt

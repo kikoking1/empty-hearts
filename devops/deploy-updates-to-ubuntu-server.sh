@@ -9,7 +9,7 @@ appsettingsPath="/home/ubuntu/apps/empty-hearts-app/empty-hearts/server/MTT.API/
 echo -E "$(jq --arg secret_key "$(uuidgen)" --arg secret_refresh_key "$(uuidgen)" '.AuthSettings.JwtSigningKey |= $secret_key | .AuthSettings.JwtRefreshTokenSigningKey |= $secret_refresh_key' ${appsettingsPath})" > ${appsettingsPath}
 
 # apply db migrations
-dotnet ef database update --project /home/ubuntu/apps/empty-hearts-app/empty-hearts/server/MTT.API/MTT.API.csproj
+/root/.dotnet/tools/dotnet-ef database update --project /home/ubuntu/apps/empty-hearts-app/empty-hearts/server/MTT.API/MTT.API.csproj
 
 systemctl start empty-hearts.service
 

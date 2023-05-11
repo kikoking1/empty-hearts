@@ -12,7 +12,7 @@ make sure your domain is pointed at the server's ip address before trying to do 
 ssh -i "C:\Users\kiko\.ssh\kikos_aws\aws_mth_key.pem" ubuntu@ec2-3-97-206-45.ca-central-1.compute.amazonaws.com
 
 # once connected, execute the following
-sudo -i
+sudo -s
 apt update && apt upgrade -y
 cd /home/ubuntu/
 mkdir apps
@@ -33,7 +33,7 @@ Put in a real email, say yes twice, and it should be live
 ssh -i "C:\Users\kiko\.ssh\kikos_aws\aws_mth_key.pem" ubuntu@ec2-3-97-206-45.ca-central-1.compute.amazonaws.com
 
 # once connected, execute the following
-sudo -i
+sudo -s
 
 # get latest version of app from github
 cd /home/ubuntu/apps/empty-hearts-app/empty-hearts/

@@ -5,7 +5,7 @@ bash /tmp/nodesource_setup.sh
 rm /tmp/nodesource_setup.sh
 apt-get install -y nodejs
 apt-get install jq -y
-sudo apt install sqlite3
+apt install sqlite3
 
 #build react app
 cd /home/ubuntu/apps/empty-hearts-app/empty-hearts/client
@@ -27,7 +27,7 @@ server {
         # Add index.php to the list if you are using PHP
         index index.html index.htm index.nginx-debian.html;
 
-        server_name empty-hearts.com www.empty-hearts.com;
+        server_name empty-hearts.com;
 
         location / {
                 try_files $uri /index.html;
@@ -83,7 +83,7 @@ systemctl start empty-hearts.service
 # install ef core, and run migrations
 dotnet tool install --global dotnet-ef
 dotnet tool update --global dotnet-ef
-dotnet ef database update --project /home/ubuntu/apps/empty-hearts-app/empty-hearts/server/MTT.API/MTT.API.csproj
+/root/.dotnet/tools/dotnet-ef database update --project /home/ubuntu/apps/empty-hearts-app/empty-hearts/server/MTT.API/MTT.API.csproj
 
 #install certbot ssl let's encrypt certificate
 snap install --classic certbot
