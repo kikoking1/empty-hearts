@@ -11,7 +11,7 @@ echo -E "$(jq --arg secret_key "$(uuidgen)" --arg secret_refresh_key "$(uuidgen)
 # apply db migrations
 /root/.dotnet/tools/dotnet-ef database update --project /home/ubuntu/apps/empty-hearts-app/empty-hearts/server/MTT.API/MTT.API.csproj
 
-systemctl start empty-hearts.service
+systemctl restart empty-hearts.service
 
 # rebuild and restart react app
 cd /home/ubuntu/apps/empty-hearts-app/empty-hearts/client
