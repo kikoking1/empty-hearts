@@ -40,7 +40,7 @@ public class PostRepository : IPostRepository
     public async Task<List<Post>> RetrieveAsync(int offset, int limit, Guid userId)
     {
         return await _mttDbContext.Posts
-            .OrderByDescending(b => b.Id)
+            .OrderByDescending(b => b.DateCreated)
             .Skip(offset)
             .Take(limit)
             .GroupJoin(
