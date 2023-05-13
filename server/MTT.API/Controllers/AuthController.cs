@@ -37,7 +37,7 @@ public class AuthController : ControllerBase
 
         if (result.ErrorMessage == null && result.Data != null)
         {
-            Response.Cookies.Append("X-Refresh-Token", result.Data.RefreshToken, new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.None, Secure = true });
+            Response.Cookies.Append("X-Refresh-Token", result.Data.RefreshToken, new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.Strict, Secure = true });
         }
 
         return StatusCode(result.StatusCode, result.ErrorMessage ?? (object) result.Data?.AccessToken);
@@ -56,7 +56,7 @@ public class AuthController : ControllerBase
         
         if (result.ErrorMessage == null && result.Data != null)
         {
-            Response.Cookies.Append("X-Refresh-Token", result.Data.RefreshToken, new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.None, Secure = true});
+            Response.Cookies.Append("X-Refresh-Token", result.Data.RefreshToken, new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.Strict, Secure = true});
         }
 
         return StatusCode(result.StatusCode, result.ErrorMessage ?? (object) result.Data?.AccessToken);
@@ -66,7 +66,7 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public ActionResult<string> Logout()
     {
-        Response.Cookies.Append("X-Refresh-Token", "", new CookieOptions() { Expires = DateTime.Now.AddDays(-1), HttpOnly = true, SameSite = SameSiteMode.None, Secure = true});
+        Response.Cookies.Append("X-Refresh-Token", "", new CookieOptions() { Expires = DateTime.Now.AddDays(-1), HttpOnly = true, SameSite = SameSiteMode.Strict, Secure = true});
         return StatusCode(StatusCodes.Status200OK);
     }
 }
