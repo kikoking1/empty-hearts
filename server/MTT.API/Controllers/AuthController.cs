@@ -10,11 +10,14 @@ public class AuthController : ControllerBase
 {
     private readonly IUserService _userService;
     private readonly ITokenService _tokenService;
+    private readonly SameSiteMode _sameSiteMode;
 
     public AuthController(IUserService userService, ITokenService tokenService)
     {
         _userService = userService;
         _tokenService = tokenService;
+        _sameSiteMode = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production" 
+            ? SameSiteMode.Strict : SameSiteMode.None;
     }
 
     [HttpPost("register")]
@@ -37,7 +40,7 @@ public class AuthController : ControllerBase
 
         if (result.ErrorMessage == null && result.Data != null)
         {
-            Response.Cookies.Append("X-Refresh-Token", result.Data.RefreshToken, new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.Strict, Secure = true });
+            Response.Cookies.Append("X-Refresh-Token", result.Data.RefreshToken, new CookieOptions() { HttpOnly = true, SameSite = _sameSiteMode, Secure = true });
         }
 
         return StatusCode(result.StatusCode, result.ErrorMessage ?? (object) result.Data?.AccessToken);
@@ -56,7 +59,7 @@ public class AuthController : ControllerBase
         
         if (result.ErrorMessage == null && result.Data != null)
         {
-            Response.Cookies.Append("X-Refresh-Token", result.Data.RefreshToken, new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.Strict, Secure = true});
+            Response.Cookies.Append("X-Refresh-Token", result.Data.RefreshToken, new CookieOptions() { HttpOnly = true, SameSite = _sameSiteMode, Secure = true});
         }
 
         return StatusCode(result.StatusCode, result.ErrorMessage ?? (object) result.Data?.AccessToken);
@@ -66,7 +69,7 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public ActionResult<string> Logout()
     {
-        Response.Cookies.Append("X-Refresh-Token", "", new CookieOptions() { Expires = DateTime.Now.AddDays(-1), HttpOnly = true, SameSite = SameSiteMode.Strict, Secure = true});
+        Response.Cookies.Append("X-Refresh-Token", "", new CookieOptions() { Expires = DateTime.Now.AddDays(-1), HttpOnly = true, SameSite = _sameSiteMode, Secure = true});
         return StatusCode(StatusCodes.Status200OK);
     }
 }
