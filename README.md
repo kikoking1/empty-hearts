@@ -1,4 +1,4 @@
-NOTE: This project can be viewed live at [https://empty-hearts.com/](https://empty-hearts.com/)
+NOTE: This project can be viewed live at [https://empty-hearts.com/](https://empty-hearts.com/) (THIS PROJECT IS NOT LIVE AT THE MOMENT)
 
 # Initial Deployment Setup on a New Ubuntu ec2 Server
 
