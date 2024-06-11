@@ -10,6 +10,7 @@ namespace MTT.API.Controllers;
 public class LikeController : ControllerBase
 {
     private readonly ILikeService _likeService;
+
     public LikeController(ILikeService likeService)
     {
         _likeService = likeService;
@@ -24,9 +25,9 @@ public class LikeController : ControllerBase
     public async Task<ActionResult<Like>> AddLikeAsync(Guid postId)
     {
         var result = await _likeService.AddLikeAsync(postId);
-        return StatusCode(result.StatusCode, result.ErrorMessage ?? (object) result.Data);
+        return StatusCode(result.StatusCode, result.ErrorMessage ?? (object)result.Data);
     }
-    
+
     [HttpDelete]
     [Route("{postId}")]
     [Authorize]
@@ -39,3 +40,4 @@ public class LikeController : ControllerBase
         return StatusCode(result.StatusCode, result.ErrorMessage ?? result.Data);
     }
 }
+

@@ -16,8 +16,10 @@ public class AuthController : ControllerBase
     {
         _userService = userService;
         _tokenService = tokenService;
-        _sameSiteMode = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production" 
-            ? SameSiteMode.Strict : SameSiteMode.None;
+        _sameSiteMode =
+            Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production"
+                ? SameSiteMode.Strict
+                : SameSiteMode.None;
     }
 
     [HttpPost("register")]
@@ -27,7 +29,7 @@ public class AuthController : ControllerBase
     public async Task<ActionResult<UserDto>> RegisterAsync(UserLogin userLogin)
     {
         var result = await _userService.RegisterAsync(userLogin);
-        return StatusCode(result.StatusCode, result.ErrorMessage ?? (object) result.Data);
+        return StatusCode(result.StatusCode, result.ErrorMessage ?? (object)result.Data);
     }
 
     [HttpPost("login")]
@@ -40,12 +42,24 @@ public class AuthController : ControllerBase
 
         if (result.ErrorMessage == null && result.Data != null)
         {
-            Response.Cookies.Append("X-Refresh-Token", result.Data.RefreshToken, new CookieOptions() { HttpOnly = true, SameSite = _sameSiteMode, Secure = true });
+            Response.Cookies.Append(
+                "X-Refresh-Token",
+                result.Data.RefreshToken,
+                new CookieOptions()
+                {
+                    HttpOnly = true,
+                    SameSite = _sameSiteMode,
+                    Secure = true
+                }
+            );
         }
 
-        return StatusCode(result.StatusCode, result.ErrorMessage ?? (object) result.Data?.AccessToken);
+        return StatusCode(
+            result.StatusCode,
+            result.ErrorMessage ?? (object)result.Data?.AccessToken
+        );
     }
-    
+
     [HttpGet("refresh")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -54,22 +68,45 @@ public class AuthController : ControllerBase
     {
         if (!Request.Cookies.TryGetValue("X-Refresh-Token", out var refreshToken))
             return BadRequest();
-        
+
         var result = await _tokenService.RefreshLoginTokensAsync(refreshToken);
-        
+
         if (result.ErrorMessage == null && result.Data != null)
         {
-            Response.Cookies.Append("X-Refresh-Token", result.Data.RefreshToken, new CookieOptions() { HttpOnly = true, SameSite = _sameSiteMode, Secure = true});
+            Response.Cookies.Append(
+                "X-Refresh-Token",
+                result.Data.RefreshToken,
+                new CookieOptions()
+                {
+                    HttpOnly = true,
+                    SameSite = _sameSiteMode,
+                    Secure = true
+                }
+            );
         }
 
-        return StatusCode(result.StatusCode, result.ErrorMessage ?? (object) result.Data?.AccessToken);
+        return StatusCode(
+            result.StatusCode,
+            result.ErrorMessage ?? (object)result.Data?.AccessToken
+        );
     }
-    
+
     [HttpGet("logout")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public ActionResult<string> Logout()
     {
-        Response.Cookies.Append("X-Refresh-Token", "", new CookieOptions() { Expires = DateTime.Now.AddDays(-1), HttpOnly = true, SameSite = _sameSiteMode, Secure = true});
+        Response.Cookies.Append(
+            "X-Refresh-Token",
+            "",
+            new CookieOptions()
+            {
+                Expires = DateTime.Now.AddDays(-1),
+                HttpOnly = true,
+                SameSite = _sameSiteMode,
+                Secure = true
+            }
+        );
         return StatusCode(StatusCodes.Status200OK);
     }
 }
+
